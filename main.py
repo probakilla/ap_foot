@@ -1,12 +1,9 @@
 import sys
-from graph import buildGraph, rotate
-from node import Point
+from graph import buildGraph
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    """if len(sys.argv) != 2:
         print("ERROR : NEED A JSON CONFIGURATION FILE!", file=sys.stderr)
-        sys.exit()
+        sys.exit()"""
 
-    graph = buildGraph(sys.argv[1])
-
-print(rotate(Point(0, 0), Point(0, 5), 90))
+    graph = buildGraph("config/positions.json")
