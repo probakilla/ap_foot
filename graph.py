@@ -14,7 +14,24 @@ class Goal:
 
 def buildGraph(file):
     jsonData = parseFile(file)
-    print(intersection(line(Point(0.5, 0), Point(2, 0)), line(Point(4.5, 0.5), Point(4.5, -0.5))))
+
+    jsongoals = jsonData["goals"][0]["posts"]
+    gp1 = Point(jsongoals[0][0], jsongoals[0][1])
+    gp2 = Point(jsongoals[1][0], jsongoals[1][1])
+    goal_line = line(gp1, gp2)
+
+    theta_step = jsonData["theta_step"]
+
+    for p in jsonData["opponents"]:
+        opos = Point(p[0], p[1])
+        g = Point(gp1.x, gp1.y)
+        while g.y < gp2.y:
+            g = rotate(opos, g, theta_step)
+
+            p_intersect = intersection(line(opos, g), goal_line)
+            print(Point(p_intersect.x, p_intersect.y))
+        break
+
     return 0
 
 
@@ -24,7 +41,7 @@ def rotate(O, M, angle):
     yM = M.y - O.y
     x = xM * math.cos(angle) + yM * math.sin(angle) + O.x
     y = - xM * math.sin(angle) + yM * math.cos(angle) + O.y
-    return Point(round(x, 2), round(y, 2))
+    return Point(round(x, 5), round(y, 5))
 
 
 def line(p1, p2):
@@ -41,7 +58,7 @@ def intersection(L1, L2):
     if D != 0:
         x = Dx / D
         y = Dy / D
-        return Point(x, y)
+        return Point(round(x, 5), round(y, 5))
     else:
         return False
 
