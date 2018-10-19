@@ -1,8 +1,14 @@
-class Node:
-    def __init__(self, pos, color, isAttack):
+class AtkNode:
+    def __init__(self, pos, color, angle):
         self.pos = pos
         self.color = color
-        self.isAttack = isAttack
+        self.angle = angle
+
+
+class DefAtk:
+    def __init__(self, pos, color):
+        self.pos = pos
+        self.color = color
 
 
 class Point:
