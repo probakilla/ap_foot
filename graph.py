@@ -1,6 +1,8 @@
 import json
 
-from node import Node, Point
+import math
+
+from node import Point
 
 
 class Goal:
@@ -12,7 +14,16 @@ class Goal:
 
 def buildGraph(file):
     jsonData = parseFile(file)
-    return graph
+    return 0
+
+
+def rotate(O, M, angle):
+    angle *= math.pi / 180
+    xM = M.x - O.x
+    yM = M.y - O.y
+    x = xM * math.cos(angle) + yM * math.sin(angle) + O.x
+    y = - xM * math.sin(angle) + yM * math.cos(angle) + O.y
+    return Point(round(x, 2), round(y, 2))
 
 
 def parseFile(file):
