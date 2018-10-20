@@ -1,3 +1,6 @@
+BLACK = 0
+WHITE = 1
+
 class AtkNode:
     def __init__(self, pos, color, angle):
         self.pos = pos
