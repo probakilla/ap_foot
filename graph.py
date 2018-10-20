@@ -10,6 +10,48 @@ class Goal:
         self.direction = direction
 
 
+class Graph:
+    def __init__(self, graphDict=None):
+        if graphDict == None:
+            graphDict = {}
+        self.graphDict = graphDict
+
+    def addNode(self, node):
+        if node not in self.graphDict:
+            self.graphDict[node] = {}
+
+    def addEdge(self, node1, node2):
+        self.addEdgeBetweenNodes(node1, node2)
+        self.addEdgeBetweenNodes(node2, node1)
+
+    def addEdgeBetweenNodes(self, node1, node2):
+        if node1 in self.graphDict:
+            if node2 not in self.graphDict[node1]:
+                self.graphDict[node1].append(node2)
+        else:
+            self.graphDict[node1] = [node2]
+
+    def listNodes(self):
+        return list(self.graphDict.keys())
+
+    def listEdges(self):
+        listEdges = []
+        for node in self.graphDict:
+            for edge in self.graphDict[node]:
+                listEdges.append((node, edge))
+        return listEdges
+
+    def removeEdgeBetweenTwoNodes(self, node1, node2):
+        self.graphDict[node1].remove(node2)
+        self.graphDict[node2].remove(node1)
+
+    def removeVertex(self, node):
+        listNeighboorNode = self.graphDict[node].copy()
+        for neighboorNode in listNeighboorNode:
+            self.removeEdgeBetweenTwoNodes(node, neighboorNode)
+        del self.graphDict[node]
+
+
 def buildGraph(file):
     jsonData = parseFile(file)
 
