@@ -1,6 +1,5 @@
-import json
-
 from geometry import rotate, line, intersection, Point
+from inputOutput import parseFile
 
 
 class Goal:
@@ -73,10 +72,3 @@ def buildGraph(file):
         break
 
     return False
-
-
-def parseFile(file):
-    jsonFile = open(file)
-    data = json.load(jsonFile)
-    jsonFile.close()
-    return data
