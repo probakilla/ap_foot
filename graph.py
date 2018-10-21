@@ -1,6 +1,7 @@
 import json
-
+import copy
 from geometry import rotate, line, intersection, Point
+from node import *
 
 
 class Goal:
@@ -15,6 +16,12 @@ class Graph:
         if graphDict == None:
             graphDict = {}
         self.graphDict = graphDict
+
+    def __str__(self):
+        return self.graphDict.__str__()
+
+    def __eq__ (self, other):
+        return self.__dict__ == other.__dict__
 
     def addNode(self, node):
         if node not in self.graphDict:
@@ -45,8 +52,8 @@ class Graph:
         self.graphDict[node1].remove(node2)
         self.graphDict[node2].remove(node1)
 
-    def removeVertex(self, node):
-        listNeighboorNode = self.graphDict[node].copy()
+    def removeNode(self, node):
+        listNeighboorNode = self.graphDict[node].copy ()
         for neighboorNode in listNeighboorNode:
             self.removeEdgeBetweenTwoNodes(node, neighboorNode)
         del self.graphDict[node]
@@ -80,3 +87,39 @@ def parseFile(file):
     data = json.load(jsonFile)
     jsonFile.close()
     return data
+
+
+def searchDominatingSet(graph):
+    queue = []
+    queue.append((copy.deepcopy (graph), []))
+    graphDone = list ()
+    while len(queue) != 0:
+        tmp = queue.pop(0)
+        currentGraph = tmp[0]
+
+        graphDone.append (copy.deepcopy (currentGraph))
+        graphDict = currentGraph.graphDict
+        dominatingSet = tmp[1]
+
+        if not remainsUndominateAttacker(graphDict):
+            return dominatingSet
+        for node in graphDict.copy ():
+            if node.color == BLACK and isinstance(node, DefNode):
+                currentGraphDict = copy.deepcopy (graphDict)
+                for neighboorNode in currentGraphDict [node]:
+                    neighboorNode.color = WHITE
+                graphWithoutNode = Graph (currentGraphDict)
+                graphWithoutNode.removeNode(node)
+                currentDominatingSet = copy.deepcopy (dominatingSet)
+                currentDominatingSet.append(node)
+                if graphWithoutNode not in graphDone:
+                    queue.append((graphWithoutNode, currentDominatingSet))
+    return None
+
+
+def remainsUndominateAttacker(graph):
+    for node in graph:
+        if (isinstance(node, AtkNode)):
+            if (node.color == BLACK):
+                return True
+    return False
