@@ -1,7 +1,8 @@
-import json
-import copy
 from geometry import rotate, line, intersection, Point
+from inputOutput import parseFile
+import copy
 from node import *
+
 
 
 class Goal:
@@ -80,14 +81,6 @@ def buildGraph(file):
         break
 
     return False
-
-
-def parseFile(file):
-    jsonFile = open(file)
-    data = json.load(jsonFile)
-    jsonFile.close()
-    return data
-
 
 def searchDominatingSet(graph):
     queue = []
