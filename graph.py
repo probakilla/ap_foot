@@ -26,7 +26,7 @@ class Graph:
 
     def addNode(self, node):
         if node not in self.graphDict:
-            self.graphDict[node] = {}
+            self.graphDict[node] = []
 
     def addEdge(self, node1, node2):
         self.addEdgeBetweenNodes(node1, node2)
