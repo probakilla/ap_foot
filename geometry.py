@@ -42,3 +42,12 @@ def calculateEquation(p1, p2):
     cd = (p2.y - p1.y) / (p2.x - p1.x)
     k = p1.y - (cd * p1.x)
     return {cd, k}
+
+
+def newPointFromDistance(p1, p2, dt):
+    d = math.sqrt(math.pow(p2.x - p1.x, 2) + math.pow(p2.y - p1.y, 2))
+    t = dt / d
+    print(t)
+    xt = (1 - t) * p1.x + t * p2.x
+    yt = (1 - t) * p1.x + t * p2.y
+    return Point(xt, yt)
