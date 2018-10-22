@@ -1,8 +1,7 @@
-from geometry import rotate, line, intersection, Point
+from geometry import rotate, line, intersection, Point, newPointFromDistance, getDistance
 from inputOutput import parseFile
 import copy
 from node import *
-
 
 
 class Goal:
@@ -21,7 +20,7 @@ class Graph:
     def __str__(self):
         return self.graphDict.__str__()
 
-    def __eq__ (self, other):
+    def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
     def addNode(self, node):
@@ -54,10 +53,17 @@ class Graph:
         self.graphDict[node2].remove(node1)
 
     def removeNode(self, node):
-        listNeighboorNode = self.graphDict[node].copy ()
+        listNeighboorNode = self.graphDict[node].copy()
         for neighboorNode in listNeighboorNode:
             self.removeEdgeBetweenTwoNodes(node, neighboorNode)
         del self.graphDict[node]
+
+
+'''
+TODO
+* IMPORTANT : gerer la direction des 'goals'
+* performance : trouver l'intersection avec l'équation plutot que la fonction 'intersection()
+'''
 
 
 def buildGraph(file):
@@ -66,42 +72,55 @@ def buildGraph(file):
     jsongoals = jsonData["goals"][0]["posts"]
     gp1 = Point(jsongoals[0][0], jsongoals[0][1])
     gp2 = Point(jsongoals[1][0], jsongoals[1][1])
-    goal_line = line(gp1, gp2)
+    goal_line = line(gp2, gp1)
 
     theta_step = jsonData["theta_step"]
+    pos_step = jsonData["robot_radius"]
 
-    for p in jsonData["opponents"]:
-        opos = Point(p[0], p[1])
-        g = Point(gp1.x, gp1.y)
-        while g.y < gp2.y:
+    for o in jsonData["opponents"]:
+        opos = Point(o[0], o[1])
+        g = Point(gp2.x, gp2.y)
+        nodes = []
+        while g.y > gp1.y:
             g = rotate(opos, g, theta_step)
+            p = intersection(line(opos, g), goal_line)  # plus tard, utiliser l'equation
+            # verifier ici que ca ne depasse pas les cages
+            node = p
+            while ((node.x - opos.x) + (node.y - opos.y)) > 0:
+                nodes.append(node)
+                node = newPointFromDistance(node, opos, pos_step)
+        for n1 in nodes:
+            for n2 in nodes:
+                d = getDistance(n1, n2)
+                if d < pos_step:
+                    nodes.remove(n2)
 
-            p_intersect = intersection(line(opos, g), goal_line)
-            print(Point(p_intersect.x, p_intersect.y))
-        break
-
+        for n in nodes:
+            print(n)
+            
     return False
+
 
 def searchDominatingSet(graph):
     queue = []
-    queue.append((copy.deepcopy (graph), []))
-    graphDone = list ()
+    queue.append((copy.deepcopy(graph), []))
+    graphDone = list()
     while len(queue) != 0:
         graphAndRemovedNodes = queue.pop(0)
         currentGraph = graphAndRemovedNodes[0]
-        graphDone.append (copy.deepcopy (currentGraph))
+        graphDone.append(copy.deepcopy(currentGraph))
         graphDict = currentGraph.graphDict
         removedNodes = graphAndRemovedNodes[1]
         if not remainsUndominateAttacker(graphDict):
             return removedNodes
-        for node in graphDict.copy ():
+        for node in graphDict.copy():
             if node.color == BLACK and isinstance(node, DefNode):
-                currentGraphDict = copy.deepcopy (graphDict)
-                for neighboorNode in currentGraphDict [node]:
+                currentGraphDict = copy.deepcopy(graphDict)
+                for neighboorNode in currentGraphDict[node]:
                     neighboorNode.color = WHITE
-                graphWithoutNode = Graph (currentGraphDict)
+                graphWithoutNode = Graph(currentGraphDict)
                 graphWithoutNode.removeNode(node)
-                currentRemovedNodes = copy.deepcopy (removedNodes)
+                currentRemovedNodes = copy.deepcopy(removedNodes)
                 currentRemovedNodes.append(node)
                 if graphWithoutNode not in graphDone:
                     queue.append((graphWithoutNode, currentRemovedNodes))
@@ -110,7 +129,7 @@ def searchDominatingSet(graph):
 
 def remainsUndominateAttacker(graph):
     for node in graph:
-        if (isinstance(node, AtkNode)):
-            if (node.color == BLACK):
+        if isinstance(node, AtkNode):
+            if node.color == BLACK:
                 return True
     return False

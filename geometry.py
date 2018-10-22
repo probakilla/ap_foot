@@ -47,7 +47,10 @@ def calculateEquation(p1, p2):
 def newPointFromDistance(p1, p2, dt):
     d = math.sqrt(math.pow(p2.x - p1.x, 2) + math.pow(p2.y - p1.y, 2))
     t = dt / d
-    print(t)
     xt = (1 - t) * p1.x + t * p2.x
-    yt = (1 - t) * p1.x + t * p2.y
-    return Point(xt, yt)
+    yt = (1 - t) * p1.y + t * p2.y
+    return Point(round(xt, 5), round(yt, 5))
+
+
+def getDistance(p1, p2):
+    return math.hypot(p2.x - p1.x, p2.y - p1.y)
