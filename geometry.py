@@ -36,3 +36,9 @@ def intersection(L1, L2):
         return Point(round(x, 5), round(y, 5))
     else:
         return False
+
+
+def calculateEquation(p1, p2):
+    cd = (p2.y - p1.y) / (p2.x - p1.x)
+    k = p1.y - (cd * p1.x)
+    return {cd, k}
