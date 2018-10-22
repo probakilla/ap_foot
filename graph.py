@@ -87,15 +87,13 @@ def searchDominatingSet(graph):
     queue.append((copy.deepcopy (graph), []))
     graphDone = list ()
     while len(queue) != 0:
-        tmp = queue.pop(0)
-        currentGraph = tmp[0]
-
+        graphAndRemovedNodes = queue.pop(0)
+        currentGraph = graphAndRemovedNodes[0]
         graphDone.append (copy.deepcopy (currentGraph))
         graphDict = currentGraph.graphDict
-        dominatingSet = tmp[1]
-
+        removedNodes = graphAndRemovedNodes[1]
         if not remainsUndominateAttacker(graphDict):
-            return dominatingSet
+            return removedNodes
         for node in graphDict.copy ():
             if node.color == BLACK and isinstance(node, DefNode):
                 currentGraphDict = copy.deepcopy (graphDict)
@@ -103,10 +101,10 @@ def searchDominatingSet(graph):
                     neighboorNode.color = WHITE
                 graphWithoutNode = Graph (currentGraphDict)
                 graphWithoutNode.removeNode(node)
-                currentDominatingSet = copy.deepcopy (dominatingSet)
-                currentDominatingSet.append(node)
+                currentRemovedNodes = copy.deepcopy (removedNodes)
+                currentRemovedNodes.append(node)
                 if graphWithoutNode not in graphDone:
-                    queue.append((graphWithoutNode, currentDominatingSet))
+                    queue.append((graphWithoutNode, currentRemovedNodes))
     return None
 
 

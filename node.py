@@ -2,10 +2,10 @@ BLACK = 0
 WHITE = 1
 
 class AtkNode:
-    def __init__(self, pos, color, angle):
+    def __init__(self, pos, angle, color=BLACK):
         self.pos = pos
-        self.color = color
         self.angle = angle
+        self.color = color
 
     def __str__(self):
         return "pos: %s, color: %s, angle: %s" % (self.pos, self.color, self.angle)
@@ -25,7 +25,7 @@ class AtkNode:
 
 
 class DefNode:
-    def __init__(self, pos, color):
+    def __init__(self, pos, color=BLACK):
         self.pos = pos
         self.color = color
 
