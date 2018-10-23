@@ -93,10 +93,10 @@ def buildGraph(file):
 
     k = 0
     while k < len(nodes):
-        tmparr = [nodes[k]]
-        for n in nodes:
-            if getDistance(nodes[k], n) > pos_step:
-                tmparr.append(n)
+        tmparr = nodes[:k + 1]
+        for i in range(k + 1, len(nodes)):
+            if getDistance(nodes[k], nodes[i]) > pos_step:
+                tmparr.append(nodes[i])
         nodes = tmparr
         k = k + 1
 
