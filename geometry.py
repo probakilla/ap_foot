@@ -7,7 +7,14 @@ class Point:
         self.y = y
 
     def __str__(self):
-        return "x = " + str(self.x) + ", y = " + str(self.y)
+        return "(" + str(self.x) + "," + str(self.y) + ")"
+
+    def __eq__(self, other):
+        if isinstance(other, Point):
+            return self.x == other.x and self.y == other.y
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 def rotate(O, M, angle):
@@ -53,4 +60,4 @@ def newPointFromDistance(p1, p2, dt):
 
 
 def getDistance(p1, p2):
-    return math.hypot(p2.x - p1.x, p2.y - p1.y)
+    return round(math.hypot(p2.x - p1.x, p2.y - p1.y), 5)

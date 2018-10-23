@@ -75,12 +75,13 @@ def buildGraph(file):
     goal_line = line(gp2, gp1)
 
     theta_step = jsonData["theta_step"]
-    pos_step = jsonData["robot_radius"]
+    pos_step = jsonData["pos_step"]
+
+    nodes = []
 
     for o in jsonData["opponents"]:
         opos = Point(o[0], o[1])
         g = Point(gp2.x, gp2.y)
-        nodes = []
         while g.y > gp1.y:
             g = rotate(opos, g, theta_step)
             p = intersection(line(opos, g), goal_line)  # plus tard, utiliser l'equation
@@ -89,15 +90,19 @@ def buildGraph(file):
             while ((node.x - opos.x) + (node.y - opos.y)) > 0:
                 nodes.append(node)
                 node = newPointFromDistance(node, opos, pos_step)
-        for n1 in nodes:
-            for n2 in nodes:
-                d = getDistance(n1, n2)
-                if d < pos_step:
-                    nodes.remove(n2)
 
+    k = 0
+    while k < len(nodes):
+        tmparr = [nodes[k]]
         for n in nodes:
-            print(n)
-            
+            if getDistance(nodes[k], n) > pos_step:
+                tmparr.append(n)
+        nodes = tmparr
+        k = k + 1
+
+    for n in nodes:
+        print(str(n), end=",")
+
     return False
 
 
