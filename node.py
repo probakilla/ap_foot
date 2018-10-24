@@ -1,8 +1,9 @@
 BLACK = 0
 WHITE = 1
 
+
 class AtkNode:
-    def __init__(self, pos, angle, color=BLACK):
+    def __init__(self, pos, angle=None, color=BLACK):
         self.pos = pos
         self.angle = angle
         self.color = color
@@ -13,10 +14,10 @@ class AtkNode:
     __repr__ = __str__
 
     def __key(self):
-        return (self.pos, self.angle)
+        return self.pos, self.angle
 
     def __eq__(self, y):
-        if (not isinstance(y, AtkNode)):
+        if not isinstance(y, AtkNode):
             return False
         return self.__key() == y.__key()
 
@@ -35,10 +36,10 @@ class DefNode:
     __repr__ = __str__
 
     def __key(self):
-        return (self.pos)
+        return self.pos
 
     def __eq__(self, y):
-        if (not isinstance(y, DefNode)):
+        if not isinstance(y, DefNode):
             return False
         return self.__key() == y.__key()
 

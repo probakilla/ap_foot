@@ -13,7 +13,7 @@ class Goal:
 
 class Graph:
     def __init__(self, graphDict=None):
-        if graphDict == None:
+        if graphDict is None:
             graphDict = {}
         self.graphDict = graphDict
 
@@ -66,6 +66,7 @@ TODO
 '''
 
 
+# desmos.com pour afficher les points
 def buildGraph(file):
     jsonData = parseFile(file)
 
@@ -77,38 +78,41 @@ def buildGraph(file):
     theta_step = jsonData["theta_step"]
     pos_step = jsonData["pos_step"]
 
-    nodes = []
+    graph = Graph()
 
     for o in jsonData["opponents"]:
         opos = Point(o[0], o[1])
+        atkNode = AtkNode(opos)
+        graph.addNode(atkNode)
         g = Point(gp2.x, gp2.y)
         while g.y > gp1.y:
             g = rotate(opos, g, theta_step)
-            p = intersection(line(opos, g), goal_line)  # plus tard, utiliser l'equation
+            p = intersection(line(opos, g), goal_line)
+            # plus tard, utiliser l'equation
             # verifier ici que ca ne depasse pas les cages
-            node = p
-            while ((node.x - opos.x) + (node.y - opos.y)) > 0:
-                nodes.append(node)
-                node = newPointFromDistance(node, opos, pos_step)
+            while ((p.x - opos.x) + (p.y - opos.y)) > 0:
+                add = True
+                for n in graph.listNodes():
+                    if isinstance(n, DefNode):
+                        if getDistance(p, n.pos) < pos_step:
+                            add = False
+                            break
+                if add:
+                    defNode = DefNode(p)
+                    graph.addNode(defNode)
+                    graph.addEdge(atkNode, defNode)
 
-    k = 0
-    while k < len(nodes):
-        tmparr = nodes[:k + 1]
-        for i in range(k + 1, len(nodes)):
-            if getDistance(nodes[k], nodes[i]) > pos_step:
-                tmparr.append(nodes[i])
-        nodes = tmparr
-        k = k + 1
+                p = newPointFromDistance(p, opos, pos_step)
 
-    for n in nodes:
-        print(str(n), end=",")
+    for p in graph.listNodes():
+        if isinstance(p, DefNode):
+            print(str(p.pos), end=",")
 
-    return False
+    return graph
 
 
 def searchDominatingSet(graph):
-    queue = []
-    queue.append((copy.deepcopy(graph), []))
+    queue = [(copy.deepcopy(graph), [])]
     graphDone = list()
     while len(queue) != 0:
         graphAndRemovedNodes = queue.pop(0)

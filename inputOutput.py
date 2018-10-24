@@ -2,7 +2,6 @@ import json
 
 from node import DefNode, AtkNode
 
-
 JSON_EXT = ".json"
 
 
@@ -18,8 +17,7 @@ def graphToJson(graph, fileName):
     if not fileName[-5:] == JSON_EXT:
         raise Exception(fileName + " is not a json file !")
     with open(fileName, 'w') as jsonFile:
-        data = {}
-        data["Posisions"] = []
+        data = {"Posisions": []}
         encoder = NodeEncoder()
         for node in graph:
             data["Posisions"].append(encoder.encode(node))

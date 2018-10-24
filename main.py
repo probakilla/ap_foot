@@ -1,13 +1,15 @@
 import sys
-from graph import buildGraph
+
+from graph import buildGraph, searchDominatingSet
 
 
 def main(argv):
     if len(sys.argv) != 2:
         print("ERROR : NEED A JSON CONFIGURATION FILE!", file=sys.stderr)
         sys.exit()
-    graph = buildGraph(argv[1])
-    print(graph)
+    g = buildGraph(argv[1])
+    searchDominatingSet(g)
+    print(g)
     return True
 
 
