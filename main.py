@@ -8,7 +8,7 @@ def main(argv):
         print("ERROR : NEED A JSON CONFIGURATION FILE!", file=sys.stderr)
         sys.exit()
     g = buildGraph(argv[1])
-    searchDominatingSet(g)
+    print (searchDominatingSet(g, 3))
     print(g)
     return True
 
