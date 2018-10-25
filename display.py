@@ -5,11 +5,10 @@ from inputOutput import parseFile
 
 
 class Display:
-    def __init__(self, graph, robotWidth, isNodesOnEdges, filePath):
-        self.getFieldWitdh(filePath)
+    def __init__(self, graph, isNodesOnEdges, filePath):
+        self.initFromFile(filePath)
         self.graph = graph
         self.size = numpy.array([1600, 1200])
-        self.robotWidth = robotWidth
         self.isNodesOnEdges = isNodesOnEdges
 
         # Colors
@@ -18,9 +17,10 @@ class Display:
         self.atkColor = (255, 0, 0)
         self.edgeColor = (150, 150, 150)
 
-    def getFieldWitdh(self, filePath):
+    def initFromFile(self, filePath):
         data = parseFile(filePath)
         self.fieldWidth = numpy.array(data["field_limits"])
+        self.robotWidth = data["robot_radius"]
 
     def getFieldCenter(self):
         return (self.fieldWidth[:, 1] + self.fieldWidth[:, 0]) / 2
@@ -45,10 +45,10 @@ class Display:
         for node in self.graph.graphDict:
             if isinstance(node, AtkNode):
                 pygame.draw.circle(screen, self.atkColor, self.getPixelFromField(
-                    (node.pos.x, node.pos.y)), int(self.robotWidth * self.getRatio()/3))
+                    (node.pos.x, node.pos.y)), int(self.robotWidth * self.getRatio()/2))
             else:
                 pygame.draw.circle(screen, self.defColor, self.getPixelFromField(
-                    (node.pos.x, node.pos.y)), int(self.robotWidth * self.getRatio()/3))
+                    (node.pos.x, node.pos.y)), int(self.robotWidth * self.getRatio()/2))
 
     def drawSegmentInField(self, screen, color, pos1, pos2, thickness):
         start = self.getPixelFromField(pos1)

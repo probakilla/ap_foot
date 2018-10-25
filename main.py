@@ -11,8 +11,9 @@ def main(argv):
         sys.exit()
     g = buildGraph(argv[1])
 
-    display = Display(g, 0.2, True, argv[1])
+    display = Display(g, True, argv[1])
     display.run()
+
     return True
 
 
