@@ -9,7 +9,9 @@ class AtkNode:
         self.color = color
 
     def __str__(self):
-        return "pos: %s, color: %s, angle: %s" % (self.pos, self.color, self.angle)
+        return "pos: %s, color: %s, angle: %s" % (self.pos,
+                                                  self.color,
+                                                  self.angle)
 
     __repr__ = __str__
 
