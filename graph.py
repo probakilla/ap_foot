@@ -1,3 +1,5 @@
+import time
+
 from geometry import Point, segmentCircleIntersection
 import copy
 from node import *
@@ -60,6 +62,7 @@ class Graph:
 
 
 def buildGraph(problem):
+    start_time = time.time()
     nodes = []
     for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(),
                        problem.pos_step):
@@ -77,11 +80,14 @@ def buildGraph(problem):
                 goal_intersection = g.kickResult(o, t)
                 if goal_intersection is not None:
                     for n in nodes:
-                        node_intersection = segmentCircleIntersection(o, goal_intersection, n, problem.robot_radius)
-                        if node_intersection is not None:
-                            dNode = DefNode(Point(n[0], n[1]))
-                            graph.addNode(dNode)
-                            graph.addEdge(oNode, dNode)
+                        if g.kickResult(n, t) is not None:
+                            node_intersection = segmentCircleIntersection(o, goal_intersection, n, problem.robot_radius)
+                            if node_intersection is not None:
+                                dNode = DefNode(Point(n[0], n[1]))
+                                graph.addNode(dNode)
+                                graph.addEdge(oNode, dNode)
+    print("--- %s seconds ---" % (time.time() - start_time))
+
     return graph
 
 
