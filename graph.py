@@ -1,7 +1,7 @@
-from geometry import rotate, line, intersection, Point, newPointFromDistance, getDistance
-from inputOutput import parseFile
+from geometry import Point, segmentCircleIntersection
 import copy
 from node import *
+import numpy as np
 
 
 class Goal:
@@ -59,55 +59,29 @@ class Graph:
         del self.graphDict[node]
 
 
-'''
-TODO
-* IMPORTANT : gerer la direction des 'goals'
-* performance : trouver l'intersection avec l'équation plutot que la fonction 'intersection()
-'''
-
-
-# desmos.com pour afficher les points
-def buildGraph(file):
-    jsonData = parseFile(file)
-
-    jsongoals = jsonData["goals"][0]["posts"]
-    gp1 = Point(jsongoals[0][0], jsongoals[0][1])
-    gp2 = Point(jsongoals[1][0], jsongoals[1][1])
-    goal_line = line(gp2, gp1)
-
-    theta_step = jsonData["theta_step"]
-    pos_step = jsonData["pos_step"]
+def buildGraph(problem):
+    nodes = []
+    for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(),
+                       problem.pos_step):
+        for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(),
+                           problem.pos_step):
+            nodes.append([i, j])
 
     graph = Graph()
-
-    for o in jsonData["opponents"]:
-        opos = Point(o[0], o[1])
-        atkNode = AtkNode(opos)
-        graph.addNode(atkNode)
-        g = Point(gp2.x, gp2.y)
-        while g.y > gp1.y:
-            g = rotate(opos, g, theta_step)
-            p = intersection(line(opos, g), goal_line)
-            # plus tard, utiliser l'equation
-            # verifier ici que ca ne depasse pas les cages
-            while ((p.x - opos.x) + (p.y - opos.y)) > 0:
-                add = True
-                for n in graph.listNodes():
-                    if isinstance(n, DefNode):
-                        if getDistance(p, n.pos) < pos_step:
-                            add = False
-                            break
-                if add:
-                    defNode = DefNode(p)
-                    graph.addNode(defNode)
-                    graph.addEdge(atkNode, defNode)
-
-                p = newPointFromDistance(p, opos, pos_step)
-
-    for p in graph.listNodes():
-        if isinstance(p, DefNode):
-            print(str(p.pos), end=",")
-
+    for i in range(problem.getNbOpponents()):
+        o = problem.getOpponent(i)
+        oNode = AtkNode(Point(o[0], o[1]))
+        graph.addNode(oNode)
+        for t in np.arange(0.0, 360.0, problem.theta_step):
+            for g in problem.goals:
+                goal_intersection = g.kickResult(o, t)
+                if goal_intersection is not None:
+                    for n in nodes:
+                        node_intersection = segmentCircleIntersection(o, goal_intersection, n, problem.robot_radius)
+                        if node_intersection is not None:
+                            dNode = DefNode(Point(n[0], n[1]))
+                            graph.addNode(dNode)
+                            graph.addEdge(oNode, dNode)
     return graph
 
 
@@ -126,7 +100,7 @@ def searchDominatingSet(graph, nbDef):
             if node.color == BLACK and isinstance(node, DefNode):
                 currentGraphDict = copy.deepcopy(graphDict)
                 currentRemovedNodes = copy.deepcopy(removedNodes)
-                if len (currentRemovedNodes) >= nbDef:
+                if len(currentRemovedNodes) >= nbDef:
                     break
                 for neighboorNode in currentGraphDict[node]:
                     neighboorNode.color = WHITE

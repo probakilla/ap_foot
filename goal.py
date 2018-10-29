@@ -1,6 +1,4 @@
-import math
 import numpy
-import sys
 
 from geometry import *
 

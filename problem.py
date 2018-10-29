@@ -1,6 +1,3 @@
-import numpy
-import sys
-
 from goal import *
 
 
@@ -13,20 +10,20 @@ class Problem:
                 raise ValueError("Cannot find '" + key + "'")
         # Reading field limits
         self.field_limits = numpy.array(data["field_limits"])
-        if (self.field_limits.shape != (2, 2)):
+        if self.field_limits.shape != (2, 2):
             raise ValueError("Invalid shape for 'field_limits': "
                              + str(self.field_limits.shape) + " expecting (2, 2)")
         # Reading goals
         self.goals = []
         for goal_data in data["goals"]:
             self.goals.append(Goal(goal_data))
-        if (len(self.goals) == 0):
+        if len(self.goals) == 0:
             raise ValueError("No goal found")
         # Reading opponents
         self.opponents = numpy.array(data["opponents"]).transpose()
-        if (self.opponents.shape[1] == 0):
+        if self.opponents.shape[1] == 0:
             raise ValueError("No opponent found")
-        if (self.opponents.shape[0] != 2):
+        if self.opponents.shape[0] != 2:
             raise ValueError("Invalid data for opponents")
         # Reading other parameters
         self.robot_radius = data["robot_radius"]
@@ -67,7 +64,7 @@ class Problem:
         return self.opponents[:, opp_id]
 
     def getNbDefenders(self):
-        if (self.defenders is None):
+        if self.defenders is None:
             return 0
         return self.defenders.shape[1]
 

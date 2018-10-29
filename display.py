@@ -8,7 +8,7 @@ class Display:
     def __init__(self, graph, isNodesOnEdges, filePath):
         self.initFromFile(filePath)
         self.graph = graph
-        self.size = numpy.array([1600, 1200])
+        self.size = numpy.array([1000, 500])
         self.isNodesOnEdges = isNodesOnEdges
 
         # Colors
@@ -45,10 +45,10 @@ class Display:
         for node in self.graph.graphDict:
             if isinstance(node, AtkNode):
                 pygame.draw.circle(screen, self.atkColor, self.getPixelFromField(
-                    (node.pos.x, node.pos.y)), int(self.robotWidth * self.getRatio()/2))
+                    (node.pos.x, node.pos.y)), int(self.robotWidth * self.getRatio() / 2))
             else:
                 pygame.draw.circle(screen, self.defColor, self.getPixelFromField(
-                    (node.pos.x, node.pos.y)), int(self.robotWidth * self.getRatio()/2))
+                    (node.pos.x, node.pos.y)), int(self.robotWidth * self.getRatio() / 2))
 
     def drawSegmentInField(self, screen, color, pos1, pos2, thickness):
         start = self.getPixelFromField(pos1)
@@ -79,7 +79,7 @@ class Display:
                 if event.type == pygame.QUIT:
                     running = False
             keys = pygame.key.get_pressed()
-            if (keys[pygame.K_ESCAPE]):
+            if keys[pygame.K_ESCAPE]:
                 running = False
             screen.fill(self.backgroundColor)
             self.draw(screen)
