@@ -3,33 +3,57 @@ import copy
 from node import BLACK, WHITE, AtkNode, DefNode
 from graph import Graph
 
-
-def searchDominatingSet(graph, nbDef):
-    queue = [(copy.deepcopy(graph), [])]
-    graphDone = list()
-    while len(queue) != 0:
-        graphAndRemovedNodes = queue.pop(0)
-        currentGraph = graphAndRemovedNodes[0]
-        graphDone.append(copy.deepcopy(currentGraph))
-        graphDict = currentGraph.graphDict
-        removedNodes = graphAndRemovedNodes[1]
-        if not remainsUndominateAttacker(graphDict):
-            return removedNodes
-        for node in graphDict.copy():
-            if node.color == BLACK and isinstance(node, DefNode):
-                currentGraphDict = copy.deepcopy(graphDict)
-                currentRemovedNodes = copy.deepcopy(removedNodes)
-                if len(currentRemovedNodes) >= nbDef:
-                    break
-                for neighboorNode in currentGraphDict[node]:
-                    neighboorNode.color = WHITE
-                graphWithoutNode = Graph(currentGraphDict)
-                graphWithoutNode.removeNode(node)
-                currentRemovedNodes.append(node)
-                if graphWithoutNode not in graphDone:
-                    queue.append((graphWithoutNode, currentRemovedNodes))
+def DSAP (graph, k, removedNodes = []):
+    # print ("Start")
+    # print (k)
+    # print (removedNodes)
+    cont = True
+    while k > 0 and cont:
+        cont = graph.removeEdgeBetweenTwoWhiteNodes () or cont
+        cont = graph.removeWhiteNodeWithBlackNeighboorhood () or cont
+        tmp = graph.R3 (k)
+        if tmp == []:
+            cont = False
+        else:
+            cont = True
+            removedNodes.append (tmp)
+    #         print (removedNodes)
+    # print (k)
+    if not remainsUndominateAttacker (graph.graphDict):
+        # print ("notRemains")
+        # print (removedNodes)
+        return removedNodes
+    if k == 0:
+        # print ("None")
+        return None
+    for node in graph.graphDict:
+        if node.color == BLACK and isinstance (node, DefNode) and len (graph.graphDict[node]) <= 7:
+            graphWithoutNode = copy.deepcopy (graph)
+            graphWithoutNode.removeNodeAndWhiteColorNeighboor (node)
+            currentRemovedNodes = copy.deepcopy (removedNodes)
+            currentRemovedNodes.append (node)
+            dominatingSet = DSAP (graphWithoutNode, k-1, currentRemovedNodes)
+            if dominatingSet is not None:
+                # print ("notNone")
+                # print (dominatingSet)
+                return dominatingSet
+            for neighboorNode in graph.graphDict[node]:
+                if neighboorNode.color == BLACK and isinstance (node, DefNode):
+                    currentRemovedNodes = copy.deepcopy (removedNodes)
+                    currentRemovedNodes.append (neighboorNode)
+                    graphWithoutNode = copy.deepcopy (graph)
+                    graphWithoutNode.removeNodeAndWhiteColorNeighboor (neighboorNode)
+                    dominatingSet = DSAP (graphWithoutNode, k-1, removedNodes)
+                    if dominatingSet is not None:
+                        # print ("test")
+                        # print (dominatingSet)
+                        return dominatingSet
+            # print ("None")
+            return None
+    # print ("None")
     return None
 
+    
 
 def remainsUndominateAttacker(graph):
     for node in graph:

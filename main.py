@@ -4,7 +4,7 @@ import sys
 from graph import buildGraph
 from display import Display
 from problem import Problem
-from algo import searchDominatingSet
+from algo import DSAP
 
 
 def main(argv):
@@ -17,7 +17,7 @@ def main(argv):
         problem = Problem(json.load(problem_file))
 
     g = buildGraph(problem)
-    print (searchDominatingSet (g, 3))
+    print (DSAP (g, 1, []))
     display = Display(g, True, argv[1])
     display.run()
 

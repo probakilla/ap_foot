@@ -53,6 +53,63 @@ class Graph:
         self.graphDict[node1].remove(node2)
         self.graphDict[node2].remove(node1)
 
+    # 1ère règle de réduction du cours
+    def removeEdgeBetweenTwoWhiteNodes (self):
+        graphDict = self.graphDict
+        haveRemoveNode = False
+        for node in graphDict:
+            if node.color == WHITE:
+                for neighboorNode in graphDict[node]:
+                    if neighboorNode.color == WHITE:
+                        self.removeEdgeBetweenTwoNodes (node, neighboorNode)
+                        haveRemoveNode = True
+        return haveRemoveNode
+
+    # 2ème règle de réduction du cours
+    def removeWhiteNodeWithBlackNeighboorhood (self):
+        graphDict = self.graphDict
+        haveRemoveNode = False
+        for node in graphDict:
+            if node == WHITE:
+                blackNeighboorhood = True
+                for neighboorNode in graphDict[node]:
+                    if neighboorNode == WHITE:
+                        blackNeighboorhood = False
+                        break
+                if blackNeighboorhood:
+                    for largeNeighboorNode in graphDict[node][0]:
+                        youpi = True
+                        for neighboorNode in graphDict[node]:
+                            if largeNeighboorNode not in graphDict[neighboorNode]:
+                                youpi = False
+                                break
+                        if youpi:
+                            self.removeNode (node)
+                            haveRemoveNode = True
+                            break
+        return haveRemoveNode
+    
+    # 3ème règle de réduction du cours
+    def R3 (self, nbDef):
+        graphDict = self.graphDict
+        removedNodes = []
+        for node in graphDict:
+            if nbDef <= 0:
+                return removedNodes
+            if node.color == BLACK and len(graphDict[node]) == 1:
+                neighboorNode = graphDict[node][0]
+                if neighboorNode.color == BLACK and isinstance (neighboorNode, DefNode):
+                    nbDef -= 1
+                    self.removeNodeAndWhiteColorNeighboor (neighboorNode)
+                    removedNodes.append (neighboorNode)
+        return removedNodes
+
+    def removeNodeAndWhiteColorNeighboor (self, node):
+        for neighboorNode in self.graphDict[node]:
+            neighboorNode.color = WHITE
+        self.removeNode (node)
+
+
     def removeNode(self, node):
         listNeighboorNode = self.graphDict[node].copy()
         for neighboorNode in listNeighboorNode:
@@ -72,12 +129,12 @@ def buildGraph(problem):
     graph = Graph()
     for i in range(problem.getNbOpponents()):
         o = problem.getOpponent(i)
-        oNode = AtkNode(Point(o[0], o[1]))
-        graph.addNode(oNode)
         for t in np.arange(0.0, 360.0, problem.theta_step):
             for g in problem.goals:
                 goal_intersection = g.kickResult(o, t)
                 if goal_intersection is not None:
+                    oNode = AtkNode(Point(o[0], o[1]), t)
+                    graph.addNode(oNode)
                     for n in nodes:
                         if g.kickResult(n, t) is not None:
                             node_intersection = segmentCircleIntersection(o, goal_intersection, n, problem.robot_radius)
