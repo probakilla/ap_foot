@@ -17,10 +17,9 @@ def main(argv):
         problem = Problem(json.load(problem_file))
 
     g = buildGraph(problem)
-    print (DSAP (g, 1, []))
+    print (DSAP(g, 10, []))
     display = Display(g, True, argv[1])
     display.run()
-
     return True
 
 

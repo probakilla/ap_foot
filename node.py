@@ -9,7 +9,7 @@ class AtkNode:
         self.color = color
 
     def __str__(self):
-        return "pos: %s, color: %s, angle: %s" % (self.pos,
+        return "AtkNode (pos: %s, color: %s, angle: %s)" % (self.pos,
                                                   self.color,
                                                   self.angle)
 
@@ -33,7 +33,7 @@ class DefNode:
         self.color = color
 
     def __str__(self):
-        return "pos: %s, color: %s" % (self.pos, self.color)
+        return "DefNode (pos: %s, color: %s)" % (self.pos, self.color)
 
     __repr__ = __str__
 

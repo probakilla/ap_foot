@@ -2,7 +2,7 @@ import unittest
 import copy
 from graph import Graph
 from node import BLACK, WHITE, AtkNode, DefNode
-from algo import searchDominatingSet, DSAP
+from algo import DSAP
 
 
 class TestGraphMethods(unittest.TestCase):
@@ -22,7 +22,7 @@ class TestGraphMethods(unittest.TestCase):
     def testBuildGraph(self):
         return
 
-    def testSearchDominatingSet(self):
+    def testDSAP(self):
         AtkA = AtkNode((1, 0))
         AtkB = AtkNode((2, 0))
         AtkC = AtkNode((3, 0))
@@ -46,7 +46,7 @@ class TestGraphMethods(unittest.TestCase):
         g.addEdge (DefB, DefC)
         g.addEdge (DefA, DefC)
 
-        dominatingSet = DSAP (g, 2, []) # Didn't work
+        dominatingSet = DSAP (g, 2, [])
         self.assertIsNone (dominatingSet)
 
     def testRemainsUndominateAttacker(self):

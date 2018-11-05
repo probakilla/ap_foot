@@ -19,7 +19,16 @@ class Graph:
         self.graphDict = graphDict
 
     def __str__(self):
-        return self.graphDict.__str__()
+        res = ""
+        for node in self.graphDict:
+            strNode = node.__str__ ()
+            strNode += ": ["
+            for neighboorNode in self.graphDict[node]:
+                strNode += neighboorNode.__str__ ()
+                strNode += ", "
+            strNode += "]\n"
+            res += strNode
+        return res
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -129,12 +138,12 @@ def buildGraph(problem):
     graph = Graph()
     for i in range(problem.getNbOpponents()):
         o = problem.getOpponent(i)
+        oNode = AtkNode(Point(o[0], o[1]))
+        graph.addNode(oNode)
         for t in np.arange(0.0, 360.0, problem.theta_step):
             for g in problem.goals:
                 goal_intersection = g.kickResult(o, t)
                 if goal_intersection is not None:
-                    oNode = AtkNode(Point(o[0], o[1]), t)
-                    graph.addNode(oNode)
                     for n in nodes:
                         if g.kickResult(n, t) is not None:
                             node_intersection = segmentCircleIntersection(o, goal_intersection, n, problem.robot_radius)
