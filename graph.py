@@ -1,7 +1,7 @@
 import time
 import numpy as np
 
-from geometry import Point, segmentCircleIntersection
+from geometry import Point, segmentCircleIntersection, getDistance
 from node import *
 
 
@@ -21,10 +21,10 @@ class Graph:
     def __str__(self):
         res = ""
         for node in self.graphDict:
-            strNode = node.__str__ ()
+            strNode = node.__str__()
             strNode += ": ["
             for neighboorNode in self.graphDict[node]:
-                strNode += neighboorNode.__str__ ()
+                strNode += neighboorNode.__str__()
                 strNode += ", "
             strNode += "]\n"
             res += strNode
@@ -63,19 +63,19 @@ class Graph:
         self.graphDict[node2].remove(node1)
 
     # 1ère règle de réduction du cours
-    def removeEdgeBetweenTwoWhiteNodes (self):
+    def removeEdgeBetweenTwoWhiteNodes(self):
         graphDict = self.graphDict
         haveRemoveNode = False
         for node in graphDict:
             if node.color == WHITE:
                 for neighboorNode in graphDict[node]:
                     if neighboorNode.color == WHITE:
-                        self.removeEdgeBetweenTwoNodes (node, neighboorNode)
+                        self.removeEdgeBetweenTwoNodes(node, neighboorNode)
                         haveRemoveNode = True
         return haveRemoveNode
 
     # 2ème règle de réduction du cours
-    def removeWhiteNodeWithBlackNeighboorhood (self):
+    def removeWhiteNodeWithBlackNeighboorhood(self):
         graphDict = self.graphDict
         haveRemoveNode = False
         for node in graphDict:
@@ -93,13 +93,13 @@ class Graph:
                                 youpi = False
                                 break
                         if youpi:
-                            self.removeNode (node)
+                            self.removeNode(node)
                             haveRemoveNode = True
                             break
         return haveRemoveNode
-    
+
     # 3ème règle de réduction du cours
-    def R3 (self, nbDef):
+    def R3(self, nbDef):
         graphDict = self.graphDict
         removedNodes = []
         for node in list(graphDict):
@@ -109,17 +109,16 @@ class Graph:
                 return removedNodes
             if node.color == BLACK and len(graphDict[node]) == 1:
                 neighboorNode = graphDict[node][0]
-                if neighboorNode.color == BLACK and isinstance (neighboorNode, DefNode):
+                if neighboorNode.color == BLACK and isinstance(neighboorNode, DefNode):
                     nbDef -= 1
-                    self.removeNodeAndWhiteColorNeighboor (neighboorNode)
-                    removedNodes.append (neighboorNode)
+                    self.removeNodeAndWhiteColorNeighboor(neighboorNode)
+                    removedNodes.append(neighboorNode)
         return removedNodes
 
-    def removeNodeAndWhiteColorNeighboor (self, node):
+    def removeNodeAndWhiteColorNeighboor(self, node):
         for neighboorNode in self.graphDict[node]:
             neighboorNode.color = WHITE
-        self.removeNode (node)
-
+        self.removeNode(node)
 
     def removeNode(self, node):
         listNeighboorNode = self.graphDict[node].copy()
@@ -140,18 +139,25 @@ def buildGraph(problem):
     graph = Graph()
     for i in range(problem.getNbOpponents()):
         o = problem.getOpponent(i)
-        oNode = AtkNode(Point(o[0], o[1]))
-        graph.addNode(oNode)
-        for t in np.arange(0.0, 360.0, problem.theta_step):
-            for g in problem.goals:
+
+        for g in problem.goals:
+            shootings = []
+            for t in np.arange(0.0, 360.0, problem.theta_step):
                 goal_intersection = g.kickResult(o, t)
                 if goal_intersection is not None:
-                    for n in nodes:
-                        if g.kickResult(n, t) is not None:
-                            node_intersection = segmentCircleIntersection(o, goal_intersection, n, problem.robot_radius)
-                            if node_intersection is not None:
-                                dNode = DefNode(Point(n[0], n[1]))
-                                graph.addNode(dNode)
-                                graph.addEdge(oNode, dNode)
+                    atkNode = AtkNode(Point(o[0], o[1]), t)
+                    shootings.append({"atk": atkNode, "intersect": goal_intersection})
+
+            for s in shootings:
+                graph.addNode(s["atk"])
+                for n in nodes:
+                    if getDistance(n, s["intersect"]) < getDistance(o, s["intersect"]):
+                        shoot_intersection = segmentCircleIntersection(o, s["intersect"], n, problem.robot_radius)
+                        if shoot_intersection is not None:
+                            defNode = DefNode(Point(n[0], n[1]))
+                            graph.addNode(defNode)
+                            graph.addEdge(s["atk"], defNode)
+
+    print("Taille du graphe : ", len(graph.graphDict))
     print("--- %s seconds ---" % (time.time() - start_time))
     return graph

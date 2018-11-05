@@ -64,7 +64,7 @@ def newPointFromDistance(p1, p2, dt):
 
 
 def getDistance(p1, p2):
-    return round(math.hypot(p2.x - p1.x, p2.y - p1.y), 5)
+    return round(math.hypot(p2[0] - p1[0], p2[1] - p1[1]), 8)
 
 
 """
