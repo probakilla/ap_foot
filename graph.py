@@ -102,7 +102,9 @@ class Graph:
     def R3 (self, nbDef):
         graphDict = self.graphDict
         removedNodes = []
-        for node in graphDict:
+        for node in list(graphDict):
+            if node in removedNodes:
+                break
             if nbDef <= 0:
                 return removedNodes
             if node.color == BLACK and len(graphDict[node]) == 1:

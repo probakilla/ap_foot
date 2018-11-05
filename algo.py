@@ -12,7 +12,7 @@ def DSAP (graph, k, removedNodes = []):
         tmp2 = graph.R3 (k)
         if tmp2 != []:
             tmp = True
-            removedNodes.append (tmp)
+            removedNodes += tmp2
         cont = tmp
     if not remainsUndominateAttacker (graph.graphDict):
         return removedNodes

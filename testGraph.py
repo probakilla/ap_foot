@@ -1,11 +1,40 @@
 import unittest
 import copy
+import random
 from graph import Graph
 from node import BLACK, WHITE, AtkNode, DefNode
 from algo import DSAP
 
+XMINPOS = -10.0
+XMAXPOS = 10.0
+YMAXPOS = 10.0
+YMINPOS = -10.0
 
 class TestGraphMethods(unittest.TestCase):
+
+    def buildRandomGraph (self, lenght, nbMaxNeighboor):
+        g = Graph ()
+        nbAtk = random.randint (1, lenght)
+        nbDef = lenght - nbAtk
+        for i in range(nbAtk):
+            pos = (random.uniform (XMINPOS, XMAXPOS), random.uniform (YMINPOS, YMAXPOS))
+            angle = random.uniform (0.0, 360.0)
+            node = AtkNode (pos, angle)
+            g.addNode (node)
+        for j in range(nbDef):
+            pos = (random.uniform (XMINPOS, XMAXPOS), random.uniform (YMINPOS, YMAXPOS))
+            node = DefNode (pos)
+            g.addNode (node)
+        for node in g.graphDict:
+            if g.graphDict[node] == []:
+                possibleNeighboor = random.sample (g.graphDict.keys (), random.randint (1, nbMaxNeighboor))
+                for neighboor in possibleNeighboor:
+                    if neighboor != node:
+                        if isinstance (node, AtkNode) and isinstance (neighboor, DefNode):
+                            g.addEdge (node, neighboor)
+                        if isinstance (node, DefNode):
+                            g.addEdge (node, neighboor)
+        return g
 
     def testAddNode(self):
         graphToTest = Graph()
@@ -39,15 +68,15 @@ class TestGraphMethods(unittest.TestCase):
         }
         g = Graph(graphDict)
         dominatingSet = DSAP (g, 2, [])
-        expectedDominatingSet = [DefA, DefC] #Can be any couple of defenders
+        expectedDominatingSet = [DefA, DefC] # Can be any couple of defenders
         self.assertEqual (dominatingSet, expectedDominatingSet)
 
         g.addEdge (DefA, DefB)
         g.addEdge (DefB, DefC)
         g.addEdge (DefA, DefC)
-
-        dominatingSet = DSAP (g, 2, [])
+        dominatingSet = DSAP (g, 999, [])
         self.assertIsNone (dominatingSet)
+
 
     def testRemainsUndominateAttacker(self):
         return
