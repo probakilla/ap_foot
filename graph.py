@@ -26,7 +26,7 @@ class Graph:
             for neighboorNode in self.graphDict[node]:
                 strNode += neighboorNode.__str__()
                 strNode += ", "
-            strNode += "]\n"
+            strNode += "]\node"
             res += strNode
         return res
 
@@ -34,6 +34,8 @@ class Graph:
         return self.__dict__ == other.__dict__
 
     def addNode(self, node):
+        #     if node in self.graphDict:
+        #         raise ValueError("NODE %s ALREADY IN GRAPH !!" % (node))
         if node not in self.graphDict:
             self.graphDict[node] = []
 
@@ -137,26 +139,70 @@ def buildGraph(problem):
             nodes.append([i, j])
 
     graph = Graph()
+
     for i in range(problem.getNbOpponents()):
-        o = problem.getOpponent(i)
+        ofender = problem.getOpponent(i)
 
         for g in problem.goals:
             shootings = []
             for t in np.arange(0.0, 360.0, problem.theta_step):
-                goal_intersection = g.kickResult(o, t)
+                goal_intersection = g.kickResult(ofender, t)
                 if goal_intersection is not None:
-                    atkNode = AtkNode(Point(o[0], o[1]), t)
-                    shootings.append({"atk": atkNode, "intersect": goal_intersection})
+                    atkNode = AtkNode(Point(ofender[0], ofender[1]), t)
+                    shootings.append(
+                        {"atk": atkNode, "intersect": goal_intersection})
 
             for s in shootings:
                 graph.addNode(s["atk"])
-                for n in nodes:
-                    if getDistance(n, s["intersect"]) < getDistance(o, s["intersect"]):
-                        shoot_intersection = segmentCircleIntersection(o, s["intersect"], n, problem.robot_radius)
+                for node in nodes:
+                    if getDistance(node, s["intersect"]) < getDistance(ofender, s["intersect"]):
+                        shoot_intersection = segmentCircleIntersection(
+                            ofender, s["intersect"], node, problem.robot_radius)
                         if shoot_intersection is not None:
-                            defNode = DefNode(Point(n[0], n[1]))
+                            defNode = DefNode(Point(node[0], node[1]))
                             graph.addNode(defNode)
                             graph.addEdge(s["atk"], defNode)
+
+    print("Taille du graphe : ", len(graph.graphDict))
+    print("--- %s seconds ---" % (time.time() - start_time))
+    return graph
+
+
+def buildGraphV2(problem):
+    start_time = time.time()
+    nodes = []
+    for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(),
+                       problem.pos_step):
+        for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(),
+                           problem.pos_step):
+            nodes.append([i, j])
+
+    graph = Graph()
+
+    shootings = []
+    for i in range(problem.getNbOpponents()):
+        ofender = problem.getOpponent(i)
+
+        for g in problem.goals:
+            for theta in np.arange(0.0, 360.0, problem.theta_step):
+                goal_intersection = g.kickResult(ofender, theta)
+                if goal_intersection is not None:
+                    atkNode = AtkNode(Point(ofender[0], ofender[1]), theta)
+                    shootings.append(
+                        {"atk": atkNode, "intersect": goal_intersection})
+
+    for defender in nodes:
+        listInterceptedShoot = []
+        for shoot in shootings:
+            shootInterception = segmentCircleIntersection(
+                ofender, shoot["intersect"], defender, problem.robot_radius)
+            if shootInterception is not None:
+                listInterceptedShoot += [shoot]
+        if len(listInterceptedShoot) > 0:
+            defNode = DefNode(Point(defender[0], defender[1]))
+            graph.addNode(defNode)
+            for interceptedShoot in listInterceptedShoot:
+                graph.addEdge(interceptedShoot["atk"], defNode)
 
     print("Taille du graphe : ", len(graph.graphDict))
     print("--- %s seconds ---" % (time.time() - start_time))

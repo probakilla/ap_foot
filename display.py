@@ -36,7 +36,7 @@ class Display:
         ratio = self.getRatio()
         offsetField = posInField - self.getFieldCenter()
         offsetPixel = self.getRatio() * offsetField
-        # Y axis is inverted to get the Z-axis pointing outside of the screen
+        # Y axis is inverted  to get the Z-axis pointing outside of the screen
         offsetPixel[1] *= -1
         pixel = self.getImgCenter() + offsetPixel
         return [int(pixel[0]), int(pixel[1])]

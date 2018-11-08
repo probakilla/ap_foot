@@ -1,7 +1,7 @@
 import json
 import sys
 
-from graph import buildGraph
+from graph import buildGraphV2
 from display import Display
 from problem import Problem
 from algo import DSAP
@@ -16,8 +16,8 @@ def main(argv):
     with open(problem_path) as problem_file:
         problem = Problem(json.load(problem_file))
 
-    g = buildGraph(problem)
-    print (DSAP(g, 10))
+    g = buildGraphV2(problem)
+    print(DSAP(g, 10))
     display = Display(g, True, argv[1])
     display.run()
     return True
