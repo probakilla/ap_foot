@@ -1,10 +1,12 @@
 import json
 import sys
 
-from graph import buildGraphV2
+from graph import buildGraphV2, Graph
 from display import Display
 from problem import Problem
 from algo import DSAP
+from node import AtkNode, DefNode
+from geometry import Point
 
 
 def main(argv):
@@ -18,8 +20,9 @@ def main(argv):
 
     g = buildGraphV2(problem)
     print(DSAP(g, 10))
-    display = Display(g, True, argv[1])
-    display.run()
+
+    display = Display(g, True, problem)
+    display.run(True)
     return True
 
 

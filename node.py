@@ -50,3 +50,6 @@ class DefNode:
 
     def __hash__(self):
         return hash(self.__key())
+
+    def getPos(self):
+        return [self.pos.x, self.pos.y]

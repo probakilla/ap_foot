@@ -53,6 +53,20 @@ class Graph:
     def listNodes(self):
         return list(self.graphDict.keys())
 
+    def getAtkNodes(self):
+        atkNodes = []
+        for node in self.graphDict:
+            if isinstance(node, AtkNode):
+                atkNodes.append(node)
+        return atkNodes
+
+    def getDefNodes(self):
+        defNodes = []
+        for node in self.graphDict:
+            if isinstance(node, DefNode):
+                defNodes.append(node)
+        return defNodes
+
     def listEdges(self):
         listEdges = []
         for node in self.graphDict:
@@ -130,7 +144,7 @@ class Graph:
 
 
 def buildGraph(problem):
-    start_time = time.time()
+    startTime = time.time()
     nodes = []
     for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(),
                        problem.pos_step):
@@ -146,11 +160,11 @@ def buildGraph(problem):
         for g in problem.goals:
             shootings = []
             for t in np.arange(0.0, 360.0, problem.theta_step):
-                goal_intersection = g.kickResult(ofender, t)
-                if goal_intersection is not None:
+                goalIntersection = g.kickResult(ofender, t)
+                if goalIntersection is not None:
                     atkNode = AtkNode(Point(ofender[0], ofender[1]), t)
                     shootings.append(
-                        {"atk": atkNode, "intersect": goal_intersection})
+                        {"atk": atkNode, "intersect": goalIntersection})
 
             for s in shootings:
                 graph.addNode(s["atk"])
@@ -164,12 +178,12 @@ def buildGraph(problem):
                             graph.addEdge(s["atk"], defNode)
 
     print("Taille du graphe : ", len(graph.graphDict))
-    print("--- %s seconds ---" % (time.time() - start_time))
+    print("--- %s seconds ---" % (time.time() - startTime))
     return graph
 
 
 def buildGraphV2(problem):
-    start_time = time.time()
+    startTime = time.time()
     nodes = []
     for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(),
                        problem.pos_step):
@@ -185,11 +199,11 @@ def buildGraphV2(problem):
 
         for g in problem.goals:
             for theta in np.arange(0.0, 360.0, problem.theta_step):
-                goal_intersection = g.kickResult(ofender, theta)
-                if goal_intersection is not None:
+                goalIntersection = g.kickResult(ofender, theta)
+                if goalIntersection is not None:
                     atkNode = AtkNode(Point(ofender[0], ofender[1]), theta)
                     shootings.append(
-                        {"atk": atkNode, "intersect": goal_intersection})
+                        {"atk": atkNode, "intersect": goalIntersection})
 
     for defender in nodes:
         listInterceptedShoot = []
@@ -205,5 +219,5 @@ def buildGraphV2(problem):
                 graph.addEdge(interceptedShoot["atk"], defNode)
 
     print("Taille du graphe : ", len(graph.graphDict))
-    print("--- %s seconds ---" % (time.time() - start_time))
+    print("--- %s seconds ---" % (time.time() - startTime))
     return graph
