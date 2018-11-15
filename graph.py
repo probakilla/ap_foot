@@ -26,7 +26,7 @@ class Graph:
             for neighboorNode in self.graphDict[node]:
                 strNode += neighboorNode.__str__()
                 strNode += ", "
-            strNode += "]\node"
+            strNode += "]\n"
             res += strNode
         return res
 
@@ -146,10 +146,8 @@ class Graph:
 def buildGraph(problem):
     startTime = time.time()
     nodes = []
-    for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(),
-                       problem.pos_step):
-        for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(),
-                           problem.pos_step):
+    for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(), problem.pos_step):
+        for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(), problem.pos_step):
             nodes.append([i, j])
 
     graph = Graph()

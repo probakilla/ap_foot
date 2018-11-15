@@ -1,11 +1,12 @@
 import numpy
-
-from geometry import *
+import math
+from geometry import segmentLineIntersection
 
 
 class Goal:
-    def __init__(self, data):
+    def __init__(self, data, field_limits):
         mandatory_keys = ["posts", "direction"]
+        self.field_limits = field_limits
         for key in mandatory_keys:
             if key not in data:
                 raise ValueError("Cannot find '" + key + "'")

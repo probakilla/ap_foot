@@ -1,6 +1,7 @@
 import json
 import sys
-
+import cProfile
+from graphV2 import buildGraph, GraphV2
 from graph import buildGraphV2, Graph
 from display import Display
 from problem import Problem
@@ -18,11 +19,15 @@ def main(argv):
     with open(problem_path) as problem_file:
         problem = Problem(json.load(problem_file))
 
-    g = buildGraphV2(problem)
-    print(DSAP(g, 10))
+    pr = cProfile.Profile()
+    pr.enable()
+    g = buildGraph(problem)
+    pr.disable()
+    pr.print_stats("time")
+    # print(DSAP(g, 10))
 
-    display = Display(g, True, problem)
-    display.run(True)
+    # display = Display(g, True, problem)
+    # display.run(True)
     return True
 
 

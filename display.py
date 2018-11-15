@@ -1,7 +1,7 @@
 import pygame
 import numpy
 import math
-from node import AtkNode
+from node import Node
 from inputOutput import parseFile
 from problem import Problem
 from geometry import segmentCircleIntersection
@@ -39,8 +39,8 @@ class Display:
         return [int(pixel[0]), int(pixel[1])]
 
     def drawNodes(self, screen):
-        for node in self.graph.graphDict:
-            if isinstance(node, AtkNode):
+        for node in self.graph.listNode:
+            if node.isAtk():
                 pygame.draw.circle(screen, self.atkColor,
                                    self.getPixelFromField(
                                        (node.pos.x, node.pos.y)),
@@ -56,7 +56,7 @@ class Display:
 
     def drawEdges(self, screen):
         for node in self.graph.graphDict:
-            pos1 = (node.pos.x, node.pos.y)
+            pos1 = (node.pos[0], node.pos[1])
             for edge in self.graph.graphDict[node]:
                 pos2 = (edge.pos.x, edge.pos.y)
                 self.drawSegmentInField(screen, self.edgeColor, pos1, pos2, 1)
@@ -77,7 +77,9 @@ class Display:
             # one is the first
 
             intercepted = False
-            for defNode in self.graph.getDefNodes():
+            for defNode in self.graph.getListNode():
+                if defNode.isAtk():
+                    continue
                 defPos = defNode.getPos()
                 collide_point = segmentCircleIntersection(robot_pos, kick_end,
                                                           defPos, self.problem.robot_radius)
@@ -91,7 +93,7 @@ class Display:
             self.drawSegmentInField(screen, color, robot_pos, kick_end, 1)
 
     def drawKickRays(self, screen):
-        for node in self.graph.getAtkNodes():
+        for node in self.graph.getListAtkNodes():
             kick_dir = 0
             while kick_dir < 2 * math.pi:
                 self.drawKickRay(

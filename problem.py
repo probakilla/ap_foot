@@ -1,10 +1,12 @@
-from goal import *
+import numpy
+from goal import Goal
 
 
 class Problem:
     def __init__(self, data):
         # Checking cont
-        mandatory_keys = ["field_limits", "robot_radius", "opponents", "theta_step", "pos_step", "goals"]
+        mandatory_keys = ["field_limits", "robot_radius",
+                          "opponents", "theta_step", "pos_step", "goals"]
         for key in mandatory_keys:
             if key not in data:
                 raise ValueError("Cannot find '" + key + "'")
@@ -16,7 +18,7 @@ class Problem:
         # Reading goals
         self.goals = []
         for goal_data in data["goals"]:
-            self.goals.append(Goal(goal_data))
+            self.goals.append(Goal(goal_data, data["field_limits"]))
         if len(self.goals) == 0:
             raise ValueError("No goal found")
         # Reading opponents
