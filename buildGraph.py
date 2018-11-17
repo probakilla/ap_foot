@@ -1,4 +1,3 @@
-import time
 import numpy as np
 
 from geometry import Point, segmentCircleIntersection, getDistance
@@ -6,7 +5,6 @@ from graph import GraphWithDict, GraphWithAdjencyMatrix
 from node import Node
 
 def buildGraphWithDict(problem):
-    startTime = time.time()
     nodes = []
     for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(), problem.pos_step):
         for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(), problem.pos_step):
@@ -36,14 +34,11 @@ def buildGraphWithDict(problem):
                             defNode = Node(Point(node[0], node[1]))
                             graph.addNode(defNode)
                             graph.addEdge(s["atk"], defNode)
-
     print("Taille du graphe : ", len(graph.graphDict))
-    print("--- %s seconds ---" % (time.time() - startTime))
     return graph
 
 
 def buildGraphWithDictV2(problem):
-    startTime = time.time()
     nodes = []
     for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(),
                        problem.pos_step):
@@ -79,11 +74,9 @@ def buildGraphWithDictV2(problem):
                 graph.addEdge(interceptedShoot["atk"], defNode)
 
     print("Taille du graphe : ", len(graph.graphDict))
-    print("--- %s seconds ---" % (time.time() - startTime))
     return graph
 
 def buildGraphWithAdjacenyMatrix(problem):
-    startTime = time.time()
     nodes = []
     for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(), problem.pos_step):
         for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(), problem.pos_step):
@@ -118,5 +111,4 @@ def buildGraphWithAdjacenyMatrix(problem):
                 graph.addEdge(interceptedShoot["atk"], defNode)
 
     print("Taille du graphe : ", len(graph.getListNode()))
-    print("--- %s seconds ---" % (time.time() - startTime))
     return graph

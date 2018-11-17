@@ -1,6 +1,7 @@
 import json
 import sys
 import cProfile
+import time
 from buildGraph import buildGraphWithDictV2, buildGraphWithAdjacenyMatrix, buildGraphWithDict
 from display import Display
 from problem import Problem
@@ -16,13 +17,16 @@ def main(argv):
     with open(problem_path) as problem_file:
         problem = Problem(json.load(problem_file))
 
-    pr = cProfile.Profile()
-    pr.enable()
+    # pr = cProfile.Profile()
+    # pr.enable()
+    startTime = time.time()
     g = buildGraphWithDictV2(problem)
-    pr.disable()
-    pr.print_stats("time")
-    #print(minDominatingSet(g, 10))
-
+    print("--- Build graph in %s seconds ---" % (time.time() - startTime))
+    # pr.disable()
+    # pr.print_stats("time")
+    startTime = time.time()
+    print(minDominatingSet(g, 10))
+    print("--- Find dominating set in %s seconds ---" % (time.time() - startTime))
     # display = Display(g, True, problem)
     # display.run(True)
     return True

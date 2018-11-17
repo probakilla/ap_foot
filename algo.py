@@ -31,7 +31,7 @@ def minDominatingSet(graph, maxDominatingSetLength):
     return None
 
 def remainsUndominatedAttacker(graph, dominatedNode):
-    for node in graph.atkDict:
-        if node not in dominatedNode:
+    for node in graph.graphDict:
+        if node.isAtk() and node not in dominatedNode:
             return True
     return False
