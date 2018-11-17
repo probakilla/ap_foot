@@ -1,6 +1,6 @@
 import json
 
-from node import DefNode, AtkNode
+from node import Node
 
 JSON_EXT = ".json"
 
@@ -26,7 +26,7 @@ def graphToJson(graph, fileName):
 
 class NodeEncoder(json.JSONEncoder):
     def default(self, node):
-        if isinstance(node, AtkNode) or isinstance(node, DefNode):
+        if isinstance(node, Node):
             return [node.pos.x, node.pos.y]
         else:
             super().default(self, node)

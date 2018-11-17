@@ -1,18 +1,15 @@
 import json
 import sys
 import cProfile
-from graphV2 import buildGraph, GraphV2
-from graph import buildGraphV2, Graph
+from buildGraph import buildGraphWithDictV2, buildGraphWithAdjacenyMatrix, buildGraphWithDict
 from display import Display
 from problem import Problem
-from algo import DSAP
-from node import AtkNode, DefNode
-from geometry import Point
+from algo import minDominatingSet
 
 
 def main(argv):
     if len(sys.argv) != 2:
-        print("ERROR : NEED A JSON CONFIGURATION FILE!", file=sys.stderr)
+        sys.stderr.write("ERROR : NEED A JSON CONFIGURATION FILE!\n")
         sys.exit()
 
     problem_path = sys.argv[1]
@@ -21,10 +18,10 @@ def main(argv):
 
     pr = cProfile.Profile()
     pr.enable()
-    g = buildGraph(problem)
+    g = buildGraphWithDictV2(problem)
     pr.disable()
     pr.print_stats("time")
-    # print(DSAP(g, 10))
+    #print(minDominatingSet(g, 10))
 
     # display = Display(g, True, problem)
     # display.run(True)

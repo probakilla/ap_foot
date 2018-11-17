@@ -1,10 +1,3 @@
-import time
-import numpy as np
-
-from geometry import Point, segmentCircleIntersection, getDistance
-from node import *
-
-
 class Goal:
     def __init__(self, leftPost, rightPost, direction):
         self.leftPost = leftPost
@@ -12,7 +5,7 @@ class Goal:
         self.direction = direction
 
 
-class Graph:
+class GraphWithDict:
     def __init__(self, graphDict=None):
         if graphDict is None:
             graphDict = {}
@@ -56,14 +49,14 @@ class Graph:
     def getAtkNodes(self):
         atkNodes = []
         for node in self.graphDict:
-            if isinstance(node, AtkNode):
+            if node.isAtk():
                 atkNodes.append(node)
         return atkNodes
 
     def getDefNodes(self):
         defNodes = []
         for node in self.graphDict:
-            if isinstance(node, DefNode):
+            if not node.isAtk():
                 defNodes.append(node)
         return defNodes
 
@@ -74,148 +67,53 @@ class Graph:
                 listEdges.append((node, edge))
         return listEdges
 
-    def removeEdgeBetweenTwoNodes(self, node1, node2):
-        self.graphDict[node1].remove(node2)
-        self.graphDict[node2].remove(node1)
+class GraphWithAdjencyMatrix:
+    def __init__(self):
+        self.listNode = list()
+        self.listIndexAtk = list()
+        self.adjacencyMatrix = list(list())
 
-    # 1ère règle de réduction du cours
-    def removeEdgeBetweenTwoWhiteNodes(self):
-        graphDict = self.graphDict
-        haveRemoveNode = False
-        for node in graphDict:
-            if node.color == WHITE:
-                for neighboorNode in graphDict[node]:
-                    if neighboorNode.color == WHITE:
-                        self.removeEdgeBetweenTwoNodes(node, neighboorNode)
-                        haveRemoveNode = True
-        return haveRemoveNode
+    def __str__(self):
+        strNode = ""
+        for indexNode in range(len(self.listNode)):
+            strNode += self.listNode[indexNode].__str__()
+            strNode += ": ["
+            for indexNeighboor in range(len(self.adjacencyMatrix[indexNode])):
+                if self.adjacencyMatrix[indexNode][indexNeighboor]:
+                    strNode += self.listNode[indexNeighboor].__str__()
+            strNode += "]\n"
+        return strNode
 
-    # 2ème règle de réduction du cours
-    def removeWhiteNodeWithBlackNeighboorhood(self):
-        graphDict = self.graphDict
-        haveRemoveNode = False
-        for node in graphDict:
-            if node == WHITE:
-                blackNeighboorhood = True
-                for neighboorNode in graphDict[node]:
-                    if neighboorNode == WHITE:
-                        blackNeighboorhood = False
-                        break
-                if blackNeighboorhood:
-                    for largeNeighboorNode in graphDict[node][0]:
-                        youpi = True
-                        for neighboorNode in graphDict[node]:
-                            if largeNeighboorNode not in graphDict[neighboorNode]:
-                                youpi = False
-                                break
-                        if youpi:
-                            self.removeNode(node)
-                            haveRemoveNode = True
-                            break
-        return haveRemoveNode
+    def getListNode(self):
+        return self.listNode
 
-    # 3ème règle de réduction du cours
-    def R3(self, nbDef):
-        graphDict = self.graphDict
-        removedNodes = []
-        for node in list(graphDict):
-            if node in removedNodes:
-                break
-            if nbDef <= 0:
-                return removedNodes
-            if node.color == BLACK and len(graphDict[node]) == 1:
-                neighboorNode = graphDict[node][0]
-                if neighboorNode.color == BLACK and isinstance(neighboorNode, DefNode):
-                    nbDef -= 1
-                    self.removeNodeAndWhiteColorNeighboor(neighboorNode)
-                    removedNodes.append(neighboorNode)
-        return removedNodes
+    def getAdjacencyMatrix(self):
+        return self.adjacencyMatrix
 
-    def removeNodeAndWhiteColorNeighboor(self, node):
-        for neighboorNode in self.graphDict[node]:
-            neighboorNode.color = WHITE
-        self.removeNode(node)
+    def getListAtkNodes(self):
+        res = list()
+        for i in self.listIndexAtk:
+            res.append(self.listNode[i])
+        return res
 
-    def removeNode(self, node):
-        listNeighboorNode = self.graphDict[node].copy()
-        for neighboorNode in listNeighboorNode:
-            self.removeEdgeBetweenTwoNodes(node, neighboorNode)
-        del self.graphDict[node]
+    def getListDefNodes(self):
+        res = self.listNode
+        for i in self.listIndexAtk:
+            del res[i]
+        return res
 
+    def addAtk(self, node):
+        self.listIndexAtk.append(len(self.listNode))
+        self.addNode(node)
 
-def buildGraph(problem):
-    startTime = time.time()
-    nodes = []
-    for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(), problem.pos_step):
-        for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(), problem.pos_step):
-            nodes.append([i, j])
+    def addNode(self, node):
+        self.listNode.append(node)
+        for i in self.adjacencyMatrix:
+            i.append(False)
+        boolList = [False] * (len(self.adjacencyMatrix) + 1)
+        self.adjacencyMatrix.append(boolList)
 
-    graph = Graph()
-
-    for i in range(problem.getNbOpponents()):
-        ofender = problem.getOpponent(i)
-
-        for g in problem.goals:
-            shootings = []
-            for t in np.arange(0.0, 360.0, problem.theta_step):
-                goalIntersection = g.kickResult(ofender, t)
-                if goalIntersection is not None:
-                    atkNode = AtkNode(Point(ofender[0], ofender[1]), t)
-                    shootings.append(
-                        {"atk": atkNode, "intersect": goalIntersection})
-
-            for s in shootings:
-                graph.addNode(s["atk"])
-                for node in nodes:
-                    if getDistance(node, s["intersect"]) < getDistance(ofender, s["intersect"]):
-                        shoot_intersection = segmentCircleIntersection(
-                            ofender, s["intersect"], node, problem.robot_radius)
-                        if shoot_intersection is not None:
-                            defNode = DefNode(Point(node[0], node[1]))
-                            graph.addNode(defNode)
-                            graph.addEdge(s["atk"], defNode)
-
-    print("Taille du graphe : ", len(graph.graphDict))
-    print("--- %s seconds ---" % (time.time() - startTime))
-    return graph
-
-
-def buildGraphV2(problem):
-    startTime = time.time()
-    nodes = []
-    for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(),
-                       problem.pos_step):
-        for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(),
-                           problem.pos_step):
-            nodes.append([i, j])
-
-    graph = Graph()
-
-    shootings = []
-    for i in range(problem.getNbOpponents()):
-        ofender = problem.getOpponent(i)
-
-        for g in problem.goals:
-            for theta in np.arange(0.0, 360.0, problem.theta_step):
-                goalIntersection = g.kickResult(ofender, theta)
-                if goalIntersection is not None:
-                    atkNode = AtkNode(Point(ofender[0], ofender[1]), theta)
-                    shootings.append(
-                        {"atk": atkNode, "intersect": goalIntersection})
-
-    for defender in nodes:
-        listInterceptedShoot = []
-        for shoot in shootings:
-            shootInterception = segmentCircleIntersection(
-                ofender, shoot["intersect"], defender, problem.robot_radius)
-            if shootInterception is not None:
-                listInterceptedShoot += [shoot]
-        if len(listInterceptedShoot) > 0:
-            defNode = DefNode(Point(defender[0], defender[1]))
-            graph.addNode(defNode)
-            for interceptedShoot in listInterceptedShoot:
-                graph.addEdge(interceptedShoot["atk"], defNode)
-
-    print("Taille du graphe : ", len(graph.graphDict))
-    print("--- %s seconds ---" % (time.time() - startTime))
-    return graph
+    def addEdge(self, node1, node2):
+        indexNode1 = self.listNode.index(node1)
+        indexNode2 = self.listNode.index(node2)
+        self.adjacencyMatrix[indexNode1][indexNode2] = True
