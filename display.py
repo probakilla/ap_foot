@@ -8,18 +8,17 @@ from geometry import segmentCircleIntersection
 
 
 class Display:
-    def __init__(self, graph, isNodesOnEdges, problem):
+    def __init__(self, graph, problem):
         self.graph = graph
-        self.size = numpy.array([1000, 500])
-        self.isNodesOnEdges = isNodesOnEdges
+        self.size = numpy.array([1500, 1000])
         self.problem = problem
         self.goalThickness = 5
         # Colors
         self.backgroundColor = (0, 0, 0)
         self.defColor = (0, 0, 255)
-        self.atkColor = (100, 100, 100)
-        self.edgeColor = (0, 255, 0)
-        self.goalColor = (150, 150, 150)
+        self.atkColor = (255, 0, 0)
+        self.edgeColor = (100, 100, 100)
+        self.goalColor = (255, 255, 255)
         self.failureColor = (255, 0, 0)
 
     def getRatio(self):
@@ -38,8 +37,19 @@ class Display:
         pixel = self.getImgCenter() + offsetPixel
         return [int(pixel[0]), int(pixel[1])]
 
-    def drawNodes(self, screen):
-        for node in self.graph.listNode:
+    def drawDictNodes(self, screen):
+        for node in self.graph.graphDict:
+            if node.isAtk():
+                pygame.draw.circle(screen, self.atkColor,
+                                   self.getPixelFromField(
+                                       (node.pos.x, node.pos.y)),
+                                   int(self.problem.robot_radius * self.getRatio() / 2))
+            else:
+                pygame.draw.circle(screen, self.defColor, self.getPixelFromField(
+                    (node.pos.x, node.pos.y)), int(self.problem.robot_radius * self.getRatio() / 2))
+
+    def drawAdjacencyNodes(self, screen):
+        for node in self.graph.getListNode():
             if node.isAtk():
                 pygame.draw.circle(screen, self.atkColor,
                                    self.getPixelFromField(
@@ -54,12 +64,24 @@ class Display:
         end = self.getPixelFromField(pos2)
         pygame.draw.line(screen, color, start, end, thickness)
 
-    def drawEdges(self, screen):
+    def drawDictEdges(self, screen):
         for node in self.graph.graphDict:
-            pos1 = (node.pos[0], node.pos[1])
+            pos1 = (node.pos.x, node.pos.y)
             for edge in self.graph.graphDict[node]:
                 pos2 = (edge.pos.x, edge.pos.y)
                 self.drawSegmentInField(screen, self.edgeColor, pos1, pos2, 1)
+
+    def drawAdjacencyEdges(self, screen):
+        listNode = self.graph.getListNode()
+        for nodeIndex in range(len(listNode)):
+            node = listNode[nodeIndex]
+            pos1 = (node.pos.x, node.pos.y)
+            adjacencyMatrix = self.graph.getAdjacencyMatrix()
+            for edgeIndex in range(len(adjacencyMatrix[nodeIndex])):
+                if adjacencyMatrix[edgeIndex]:
+                    edge = listNode[edgeIndex]
+                    pos2 = (edge.pos.x, edge.pos.y)
+                    self.drawSegmentInField(screen, self.edgeColor, pos1, pos2, 1)
 
     def drawKickRay(self, screen, robot_pos, kick_dir):
         # Getting closest goal to score
@@ -77,7 +99,7 @@ class Display:
             # one is the first
 
             intercepted = False
-            for defNode in self.graph.getListNode():
+            for defNode in self.graph.graphDict:
                 if defNode.isAtk():
                     continue
                 defPos = defNode.getPos()
@@ -93,11 +115,12 @@ class Display:
             self.drawSegmentInField(screen, color, robot_pos, kick_end, 1)
 
     def drawKickRays(self, screen):
-        for node in self.graph.getListAtkNodes():
+        for opponentIndex in range(self.problem.getNbOpponents()):
+            opponent = self.problem.getOpponent(opponentIndex)
             kick_dir = 0
             while kick_dir < 2 * math.pi:
                 self.drawKickRay(
-                    screen, node.getPos(), kick_dir)
+                    screen, opponent, kick_dir)
                 kick_dir += self.problem.theta_step
 
     def drawGoals(self, screen):
@@ -105,24 +128,31 @@ class Display:
             self.drawSegmentInField(screen, self.goalColor, goal.posts[:, 0],
                                     goal.posts[:, 1], self.goalThickness)
 
-    def drawField(self, screen):
-        self.drawNodes(screen)
+    def drawDictField(self, screen):
+        self.drawDictNodes(screen)
         self.drawGoals(screen)
         self.drawKickRays(screen)
 
-    def drawGraph(self, screen):
-        if not self.isNodesOnEdges:
-            self.drawEdges(screen)
-            self.drawNodes(screen)
-            self.drawGoals(screen)
-        else:
-            self.drawNodes(screen)
-            self.drawEdges(screen)
-            self.drawGoals(screen)
+    def drawAdjancencyField(self, screen):
+        self.drawDictNodes(screen)
+        self.drawGoals(screen)
+        self.drawKickRays(screen)
+
+    def drawDictGraph(self, screen):
+        self.drawDictEdges(screen)
+        self.drawDictNodes(screen)
+        self.drawGoals(screen)
+
+    def drawAdjacencyGraph(self, screen):
+        self.drawAdjacencyEdges(screen)
+        self.drawAdjacencyNodes(screen)
+        self.drawGoals(screen)
+
 
     # If isField is set to True, draw the field from graph,
     # otherwise draw the graph (with edges instead of kicks)
-    def run(self, isField):
+
+    def runDictField(self):
         pygame.init()
         screen = pygame.display.set_mode(self.size)
         running = True
@@ -134,8 +164,35 @@ class Display:
             if keys[pygame.K_ESCAPE]:
                 running = False
             screen.fill(self.backgroundColor)
-            if isField:
-                self.drawField(screen)
-            else:
-                self.drawGraph(screen)
+            self.drawDictField(screen)
+            pygame.display.flip()
+
+    def runDictGraph(self):
+        pygame.init()
+        screen = pygame.display.set_mode(self.size)
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_ESCAPE]:
+                running = False
+            screen.fill(self.backgroundColor)
+            self.drawDictGraph(screen)
+            pygame.display.flip()
+
+    def runAdjacencyGraph(self):
+        pygame.init()
+        screen = pygame.display.set_mode(self.size)
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_ESCAPE]:
+                running = False
+            screen.fill(self.backgroundColor)
+            self.drawAdjacencyGraph(screen)
             pygame.display.flip()

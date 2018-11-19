@@ -72,3 +72,6 @@ class Problem:
 
     def getDefender(self, def_id):
         return self.defenders[:, def_id]
+
+    def getRobotRadius(self):
+        return self.robot_radius

@@ -20,6 +20,25 @@ class Point:
     def __hash__(self):
         return hash((self.x, self.y))
 
+    def __mul__(self, number):
+        return Point(self.x * number, self.y * number)
+
+    def __sub__(self, point):
+        return Point(self.x - point.x, self.y - point.y)
+
+    def __add__(self, point):
+        return Point(self.x + point.x, self.y + point.y)
+
+    def translate(self, distance):
+        self.x += distance
+        self.y += distance
+
+    def multiplyByNumber(self, number):
+        return Point(self.x * number, self.y * number)
+
+    def divideByNumber(self, number):
+        return Point(self.x / number, self.y / number)
+
 
 def rotate(O, M, angle):
     angle *= math.pi / 180
@@ -62,9 +81,12 @@ def newPointFromDistance(p1, p2, dt):
     yt = (1 - t) * p1.y + t * p2.y
     return Point(round(xt, 5), round(yt, 5))
 
+def getDistancePts(p1, p2):
+    return getDistance([p1.x, p1.y], [p2.x, p2.y])
 
 def getDistance(p1, p2):
     return math.hypot(p2[0] - p1[0], p2[1] - p1[1])
+
 
 
 """
@@ -118,3 +140,8 @@ def segmentCircleIntersection(seg_start, seg_end, circle_center, circle_radius):
     # Intersection is inside the circle, now going to the border in opposite direction of seg_dir
     offset_length = math.sqrt(circle_radius ** 2 - dist ** 2)  # Pythagore
     return normal_intersection - offset_length * seg_dir
+
+def moveInLine(distance, translatedPoint, pointInLine):
+    tmpoint = translatedPoint - pointInLine
+    de = tmpoint.multiplyByNumber(distance).divideByNumber(getDistancePts(translatedPoint, pointInLine))
+    return (translatedPoint - de)

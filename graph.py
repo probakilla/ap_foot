@@ -27,8 +27,8 @@ class GraphWithDict:
         return self.__dict__ == other.__dict__
 
     def addNode(self, node):
-        #     if node in self.graphDict:
-        #         raise ValueError("NODE %s ALREADY IN GRAPH !!" % (node))
+        # if node in self.graphDict:
+        #     raise ValueError("NODE %s ALREADY IN GRAPH !!" % (node))
         if node not in self.graphDict:
             self.graphDict[node] = []
 
@@ -67,7 +67,7 @@ class GraphWithDict:
                 listEdges.append((node, edge))
         return listEdges
 
-class GraphWithAdjencyMatrix:
+class GraphWithAdjacencyMatrix:
     def __init__(self):
         self.listNode = list()
         self.listIndexAtk = list()
