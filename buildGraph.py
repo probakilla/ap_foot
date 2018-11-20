@@ -49,10 +49,10 @@ def buildGraphWithDictV2(problem):
 
     graph = GraphWithDict()
 
-    shootings = []
     for i in range(problem.getNbOpponents()):
         ofender = problem.getOpponent(i)
-
+        
+        shootings = []
         for g in problem.goals:
             for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):
                 goalIntersection = g.kickResult(ofender, theta)
@@ -84,24 +84,22 @@ def buildGraphWithAdjacencyMatrix(problem):
 
     graph = GraphWithAdjacencyMatrix()
 
-    shootings = []
     for indexOpp in range(problem.getNbOpponents()):
         ofender = problem.getOpponent(indexOpp)
 
+        shootings = []
         for goal in problem.goals:
             for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):
                 goalIntersection = goal.kickResult(ofender, theta)
                 if goalIntersection is not None:
                     atkNode = Node(Point(ofender[0], ofender[1]), theta)
-                    shootings.append(
-                        {"atk": atkNode, "intersect": goalIntersection})
+                    shootings.append({"atk": atkNode, "intersect": goalIntersection})
                     graph.addAtk(atkNode)
 
         for defender in nodes:
             listInterceptedShoot = []
             for shoot in shootings:
-                shootInterception = segmentCircleIntersection(
-                    ofender, shoot["intersect"], defender, problem.robot_radius)
+                shootInterception = segmentCircleIntersection(ofender, shoot["intersect"], defender, problem.robot_radius)
                 if shootInterception is not None:
                     listInterceptedShoot += [shoot]
             if len(listInterceptedShoot) > 0:

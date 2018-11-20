@@ -3,7 +3,7 @@ import sys
 import cProfile
 import time
 from buildGraph import buildGraphWithAdjacencyMatrix, buildGraphWithDict, buildGraphWithDictV2
-from display import Display
+from display import Display, DISPLAY_GRAPH, DISPLAY_FIELD
 from problem import Problem
 from algo import minDominatingSet
 
@@ -36,7 +36,8 @@ def main(argv):
     # print("--- Find dominating set in %s seconds ---" % (time.time() - startTime))
 
     display = Display(gAdj, problem)
-    display.runAdjacencyGraph()
+    #DISPLAY_FIELD OR DISPLAY_GRAPH
+    display.run(DISPLAY_GRAPH)
 
     return True
 
