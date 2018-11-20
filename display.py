@@ -6,6 +6,9 @@ from inputOutput import parseFile
 from problem import Problem
 from geometry import segmentCircleIntersection
 
+DISPLAY_FIELD = 1
+DISPLAY_GRAPH = 2
+
 
 class Display:
     def __init__(self, graph, problem):
@@ -123,6 +126,14 @@ class Display:
                     screen, opponent, kick_dir)
                 kick_dir += self.problem.theta_step
 
+    def drawKickRaysAdj(self, screen):
+        for opponent in self.graph.getListNode():
+            kick_dir = 0
+            while kick_dir < 2 * math.pi:
+                self.drawKickRay(
+                    screen, opponent, kick_dir)
+                kick_dir += self.problem.theta_step
+
     def drawGoals(self, screen):
         for goal in self.problem.goals:
             self.drawSegmentInField(screen, self.goalColor, goal.posts[:, 0],
@@ -134,9 +145,9 @@ class Display:
         self.drawKickRays(screen)
 
     def drawAdjancencyField(self, screen):
-        self.drawDictNodes(screen)
+        self.drawAdjacencyNodes(screen)
         self.drawGoals(screen)
-        self.drawKickRays(screen)
+        self.drawKickRaysAdj(screen)
 
     def drawDictGraph(self, screen):
         self.drawDictEdges(screen)
@@ -151,11 +162,16 @@ class Display:
 
     # If isField is set to True, draw the field from graph,
     # otherwise draw the graph (with edges instead of kicks)
-
-    def runDictField(self):
+    
+    def run(self, display_type):
         pygame.init()
         screen = pygame.display.set_mode(self.size)
         running = True
+
+        f = self.drawAdjacencyGraph if display_type == DISPLAY_GRAPH else self.drawAdjancencyField
+        if isinstance(self.graph, dict):
+            f = self.drawDictGraph if display_type == DISPLAY_GRAPH else self.drawDictField
+
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -164,35 +180,5 @@ class Display:
             if keys[pygame.K_ESCAPE]:
                 running = False
             screen.fill(self.backgroundColor)
-            self.drawDictField(screen)
-            pygame.display.flip()
-
-    def runDictGraph(self):
-        pygame.init()
-        screen = pygame.display.set_mode(self.size)
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_ESCAPE]:
-                running = False
-            screen.fill(self.backgroundColor)
-            self.drawDictGraph(screen)
-            pygame.display.flip()
-
-    def runAdjacencyGraph(self):
-        pygame.init()
-        screen = pygame.display.set_mode(self.size)
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_ESCAPE]:
-                running = False
-            screen.fill(self.backgroundColor)
-            self.drawAdjacencyGraph(screen)
+            f(screen)
             pygame.display.flip()
