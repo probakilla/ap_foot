@@ -2,10 +2,10 @@ import json
 import sys
 import cProfile
 import time
-from buildGraph import buildGraphWithAdjacencyMatrix, buildGraphWithDict, buildGraphWithDictV2
-from display import Display, DISPLAY_GRAPH, DISPLAY_FIELD
-from problem import Problem
-from algo import minDominatingSet
+from algo.buildGraph import buildGraphWithAdjacencyMatrix, buildGraphWithDict, buildGraphWithDictV2
+from inputOutput.display import Display, DISPLAY_GRAPH, DISPLAY_FIELD
+from inputOutput.problem import Problem
+from algo.algo import minDominatingSet
 
 
 def main(argv):

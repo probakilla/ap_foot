@@ -1,8 +1,8 @@
 import numpy as np
 
-from geometry import Point, segmentCircleIntersection, getDistance, moveInLine, getDistancePts
-from graph import GraphWithDict, GraphWithAdjacencyMatrix
-from node import Node
+from algo.geometry import Point, segmentCircleIntersection, getDistance, moveInLine, getDistancePts
+from graph.graph import GraphWithDict, GraphWithAdjacencyMatrix
+from graph.node import Node
 
 
 def buildGraphWithDict(problem):
@@ -51,7 +51,7 @@ def buildGraphWithDictV2(problem):
 
     for i in range(problem.getNbOpponents()):
         ofender = problem.getOpponent(i)
-        
+
         shootings = []
         for g in problem.goals:
             for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):

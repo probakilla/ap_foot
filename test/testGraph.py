@@ -1,10 +1,13 @@
 import unittest
 import copy
 import random
-from graph import GraphWithDict
-from node import Node
-from algo import remainsUndominatedAttacker, minDominatingSet
+import sys
+import os
+from src.graph.graph import GraphWithDict
+from src.graph.node import Node
+from src.algo.algo import remainsUndominatedAttacker, minDominatingSet
 
+sys.path.insert(0, os.path.dirname(__file__))
 
 XMINPOS = -10.0
 XMAXPOS = 10.0
@@ -81,10 +84,10 @@ class TestGraphMethods(unittest.TestCase):
         g.addEdge(DefA, DefB)
         g.addEdge(DefB, DefC)
         g.addEdge(DefA, DefC)
-        
+
         dominatingSet = minDominatingSet(g, 999)
         self.assertIsNone(dominatingSet)
-        
+
         # Commented because the test take to much time with it.
         # g = self.buildRandomGraph(60, 20)
         # dominatingSet = minDominatingSet(g, 10)

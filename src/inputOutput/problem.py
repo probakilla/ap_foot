@@ -1,5 +1,5 @@
 import numpy
-from goal import Goal
+from inputOutput.goal import Goal
 
 
 class Problem:

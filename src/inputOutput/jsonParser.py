@@ -1,6 +1,6 @@
 import json
 
-from node import Node
+from graph.node import Node
 
 JSON_EXT = ".json"
 

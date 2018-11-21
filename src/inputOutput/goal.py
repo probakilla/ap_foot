@@ -1,6 +1,6 @@
 import numpy
 import math
-from geometry import segmentLineIntersection
+from algo.geometry import segmentLineIntersection
 
 
 class Goal:

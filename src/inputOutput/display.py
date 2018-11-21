@@ -1,10 +1,10 @@
 import pygame
 import numpy
 import math
-from node import Node
-from inputOutput import parseFile
-from problem import Problem
-from geometry import segmentCircleIntersection
+from graph.node import Node
+from inputOutput.jsonParser import parseFile
+from inputOutput.problem import Problem
+from algo.geometry import segmentCircleIntersection
 
 DISPLAY_FIELD = 1
 DISPLAY_GRAPH = 2
@@ -162,7 +162,7 @@ class Display:
 
     # If isField is set to True, draw the field from graph,
     # otherwise draw the graph (with edges instead of kicks)
-    
+
     def run(self, display_type):
         pygame.init()
         screen = pygame.display.set_mode(self.size)

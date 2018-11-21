@@ -1,4 +1,4 @@
-from graph import GraphWithDict
+from src.graph.graph import GraphWithDict
 import copy
 
 def minDominatingSet(graph, maxDominatingSetLength):
@@ -13,7 +13,7 @@ def minDominatingSet(graph, maxDominatingSetLength):
         for currentNode in graph.graphDict:
             if currentNode not in markedNodes and not currentNode.isAtk():
                 currentRemovedNodes = removedNodes.copy()
-                currentMarkedNodes = markedNodes.copy() 
+                currentMarkedNodes = markedNodes.copy()
                 lenCurrentRemovedNodes = len(currentRemovedNodes)
                 if lenCurrentRemovedNodes == maxDominatingSetLength:
                     break
