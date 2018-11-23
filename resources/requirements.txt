@@ -1,0 +1,5 @@
+pylint
+pygame
+numpy
+nose
+pytest

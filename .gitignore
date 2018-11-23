@@ -3,3 +3,4 @@ __pycache__
 pseudoAlgo.md
 *.pyc
 .pytest_cache
+lintResult
