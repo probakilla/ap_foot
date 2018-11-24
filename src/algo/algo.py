@@ -1,7 +1,8 @@
-from src.graph.graph import GraphWithDict
+from graph.graph import GraphWithDict
 import copy
 
 def minDominatingSet(graph, maxDominatingSetLength):
+    ''' Find the minimum dominating set for a given set max length '''
     markedNodes = set()
     removedNodes = set()
     queue = [(markedNodes, removedNodes)]

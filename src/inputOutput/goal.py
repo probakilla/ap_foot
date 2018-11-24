@@ -3,7 +3,7 @@ import math
 from algo.geometry import segmentLineIntersection
 
 
-class Goal:
+class Goal(object):
     def __init__(self, data, field_limits):
         mandatory_keys = ["posts", "direction"]
         self.field_limits = field_limits

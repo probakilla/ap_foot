@@ -2,7 +2,7 @@ import numpy
 from inputOutput.goal import Goal
 
 
-class Problem:
+class Problem(object):
     def __init__(self, data):
         # Checking cont
         mandatory_keys = ["field_limits", "robot_radius",

@@ -10,7 +10,7 @@ DISPLAY_FIELD = 1
 DISPLAY_GRAPH = 2
 
 
-class Display:
+class Display(object):
     def __init__(self, graph, problem):
         self.graph = graph
         self.size = numpy.array([1500, 1000])

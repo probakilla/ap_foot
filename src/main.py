@@ -2,7 +2,9 @@ import json
 import sys
 import cProfile
 import time
-from algo.buildGraph import buildGraphWithAdjacencyMatrix, buildGraphWithDict, buildGraphWithDictV2
+from algo.buildGraph import buildGraphWithAdjacencyMatrix
+from algo.buildGraph import buildGraphWithDict
+from algo.buildGraph import buildGraphWithDictV2
 from inputOutput.display import Display, DISPLAY_GRAPH, DISPLAY_FIELD
 from inputOutput.problem import Problem
 from algo.algo import minDominatingSet
