@@ -119,8 +119,8 @@ class GraphWithAdjacencyMatrix(object):
 
     def getListDefNodes(self):
         ''' Retrieves a list containing only the defenders '''
-        res = self.listNode
-        for i in self.listIndexAtk:
+        res = list(self.listNode)
+        for i in self.listIndexAtk[::-1]:
             del res[i]
         return res
 
