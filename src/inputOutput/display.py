@@ -2,6 +2,7 @@ import pygame
 import numpy
 import math
 from graph.node import Node
+from graph.graph import GraphWithDict
 from inputOutput.jsonParser import parseFile
 from inputOutput.problem import Problem
 from algo.geometry import segmentCircleIntersection
@@ -169,7 +170,7 @@ class Display(object):
         running = True
 
         f = self.drawAdjacencyGraph if display_type == DISPLAY_GRAPH else self.drawAdjancencyField
-        if isinstance(self.graph, dict):
+        if isinstance(self.graph, GraphWithDict):
             f = self.drawDictGraph if display_type == DISPLAY_GRAPH else self.drawDictField
 
         while running:

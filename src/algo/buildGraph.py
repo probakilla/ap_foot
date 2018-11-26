@@ -9,6 +9,7 @@ from algo.geometry import getDistancePts
 from graph.graph import GraphWithDict
 from graph.graph import GraphWithAdjacencyMatrix
 from graph.node import Node
+from matplotlib.patches import Circle
 
 
 def buildGraphWithDict(problem):
@@ -71,18 +72,19 @@ def buildGraphWithDictV2(problem):
                     shootings.append(
                         {"atk": atkNode, "intersect": goalIntersection})
 
+        circ = Circle(ofender, problem.robot_radius)
         for defender in nodes:
-            listInterceptedShoot = []
-            for shoot in shootings:
-                shootInterception = segmentCircleIntersection(
-                    ofender, shoot["intersect"], defender, problem.robot_radius)
-                if shootInterception is not None:
-                    listInterceptedShoot += [shoot]
-            if len(listInterceptedShoot) > 0:
-                defNode = Node(Point(defender[0], defender[1]))
-                graph.addNode(defNode)
-                for interceptedShoot in listInterceptedShoot:
-                    graph.addEdge(interceptedShoot["atk"], defNode)
+            if not circ.contains_point(defender):
+                listInterceptedShoot = []
+                for shoot in shootings:
+                    shootInterception = segmentCircleIntersection(ofender, shoot["intersect"], defender, problem.robot_radius)
+                    if shootInterception is not None:
+                        listInterceptedShoot += [shoot]
+                if len(listInterceptedShoot) > 0:
+                    defNode = Node(Point(defender[0], defender[1]))
+                    graph.addNode(defNode)
+                    for interceptedShoot in listInterceptedShoot:
+                        graph.addEdge(interceptedShoot["atk"], defNode)
     return graph
 
 
@@ -108,16 +110,18 @@ def buildGraphWithAdjacencyMatrix(problem):
                         {"atk": atkNode, "intersect": goalIntersection})
                     graph.addAtk(atkNode)
 
+        circ = Circle(ofender, problem.robot_radius)
         for defender in nodes:
-            listInterceptedShoot = []
-            for shoot in shootings:
-                shootInterception = segmentCircleIntersection(
-                    ofender, shoot["intersect"], defender, problem.robot_radius)
-                if shootInterception is not None:
-                    listInterceptedShoot += [shoot]
-            if len(listInterceptedShoot) > 0:
-                defNode = Node(Point(defender[0], defender[1]))
-                graph.addNode(defNode)
-                for interceptedShoot in listInterceptedShoot:
-                    graph.addEdge(interceptedShoot["atk"], defNode)
+            if not circ.contains_point(defender):
+                listInterceptedShoot = []
+                for shoot in shootings:
+                    shootInterception = segmentCircleIntersection(
+                        ofender, shoot["intersect"], defender, problem.robot_radius)
+                    if shootInterception is not None:
+                        listInterceptedShoot += [shoot]
+                if len(listInterceptedShoot) > 0:
+                    defNode = Node(Point(defender[0], defender[1]))
+                    graph.addNode(defNode)
+                    for interceptedShoot in listInterceptedShoot:
+                        graph.addEdge(interceptedShoot["atk"], defNode)
     return graph
