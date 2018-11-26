@@ -3,6 +3,7 @@ import numpy
 import math
 from graph.node import Node
 from graph.graph import GraphWithDict
+from graph.graph import GraphWithAdjacencyMatrix
 from inputOutput.jsonParser import parseFile
 from inputOutput.problem import Problem
 from algo.geometry import segmentCircleIntersection
@@ -12,12 +13,13 @@ DISPLAY_GRAPH = 2
 
 
 class Display(object):
-    def __init__(self, graph, problem, dominantList=None):
+    def __init__(self, graph, problem ,dominantList=list()):
         self.graph = graph
         self.size = numpy.array([1500, 1000])
         self.problem = problem
         self.goalThickness = 5
         self.dominantList = dominantList
+        self.collide = False
         # Colors
         self.backgroundColor = (0, 0, 0)
         self.defColor = (0, 0, 255)
@@ -26,6 +28,7 @@ class Display(object):
         self.goalColor = (255, 255, 255)
         self.domColor = (255, 105, 180)
         self.failureColor = (255, 0, 0)
+        self.stopColor = (0, 255, 0)
 
     def getRatio(self):
         return 0.4 * min(self.size[0] / self.problem.field_limits[0, 1] -
@@ -43,16 +46,23 @@ class Display(object):
         pixel = self.getImgCenter() + offsetPixel
         return [int(pixel[0]), int(pixel[1])]
 
-    def drawDictNodes(self, screen):
-        for node in self.graph.graphDict:
+    def drawNodes(self, screen):
+        listNodes = self.getGraphListNode()
+        for node in listNodes:
             if node.isAtk():
                 pygame.draw.circle(screen, self.atkColor,
                                    self.getPixelFromField(
                                        (node.pos.x, node.pos.y)),
-                                   int(self.problem.robot_radius * self.getRatio() / 2))
+                                   int(self.problem.robot_radius * self.getRatio()))
             else:
                 pygame.draw.circle(screen, self.defColor, self.getPixelFromField(
-                    (node.pos.x, node.pos.y)), int(self.problem.robot_radius * self.getRatio() / 2))
+                    (node.pos.x, node.pos.y)), int(self.problem.robot_radius * self.getRatio()))
+
+    def getGraphListNode (self):
+        if isinstance(self.graph, GraphWithDict):
+            return self.graph.graphDict
+        if isinstance(self.graph, GraphWithAdjacencyMatrix):
+            return self.graph.getListNode()
 
     def drawDominants(self, screen):
         if self.dominantList is not None:
@@ -60,18 +70,8 @@ class Display(object):
                 pygame.draw.circle(screen, self.domColor,
                                     self.getPixelFromField(
                                         (node.pos.x, node.pos.y)),
-                                    int(self.problem.robot_radius * self.getRatio() / 2))
+                                    int(self.problem.robot_radius * self.getRatio()))
 
-    def drawAdjacencyNodes(self, screen):
-        for node in self.graph.getListNode():
-            if node.isAtk():
-                pygame.draw.circle(screen, self.atkColor,
-                                   self.getPixelFromField(
-                                       (node.pos.x, node.pos.y)),
-                                   int(self.problem.robot_radius * self.getRatio() / 2))
-            else:
-                pygame.draw.circle(screen, self.defColor, self.getPixelFromField(
-                    (node.pos.x, node.pos.y)), int(self.problem.robot_radius * self.getRatio() / 2))
 
     def drawSegmentInField(self, screen, color, pos1, pos2, thickness):
         start = self.getPixelFromField(pos1)
@@ -114,32 +114,25 @@ class Display(object):
             # one is the first
 
             intercepted = False
-            for defNode in self.graph.graphDict:
+            for defNode in self.dominantList:
                 if defNode.isAtk():
                     continue
                 defPos = defNode.getPos()
                 collide_point = segmentCircleIntersection(robot_pos, kick_end,
                                                           defPos, self.problem.robot_radius)
                 if not collide_point is None:
-                    kick_end = collide_point
+                    if self.collide:
+                        kick_end = collide_point
                     intercepted = True
             # TODO
             color = self.failureColor
             if intercepted:
-                color = self.edgeColor
+                color = self.stopColor
             self.drawSegmentInField(screen, color, robot_pos, kick_end, 1)
 
     def drawKickRays(self, screen):
         for opponentIndex in range(self.problem.getNbOpponents()):
             opponent = self.problem.getOpponent(opponentIndex)
-            kick_dir = 0
-            while kick_dir < 2 * math.pi:
-                self.drawKickRay(
-                    screen, opponent, kick_dir)
-                kick_dir += self.problem.theta_step
-
-    def drawKickRaysAdj(self, screen):
-        for opponent in self.graph.getListNode():
             kick_dir = 0
             while kick_dir < 2 * math.pi:
                 self.drawKickRay(
@@ -152,40 +145,39 @@ class Display(object):
                                     goal.posts[:, 1], self.goalThickness)
 
     def drawDictField(self, screen):
-        self.drawDictNodes(screen)
+        self.drawNodes(screen)
         self.drawDominants(screen)
         self.drawGoals(screen)
         self.drawKickRays(screen)
 
     def drawAdjancencyField(self, screen):
-        self.drawAdjacencyNodes(screen)
+        self.drawNodes(screen)
         self.drawDominants(screen)
         self.drawGoals(screen)
-        self.drawKickRaysAdj(screen)
+        self.drawKickRays(screen)
 
-    def drawDictGraph(self, screen):
-        self.drawDictEdges(screen)
-        self.drawDictNodes(screen)
+    def drawGraph(self, screen):
+        if isinstance(self.graph, GraphWithDict):
+            self.drawDictEdges(screen)
+        if isinstance(self.graph, GraphWithAdjacencyMatrix):
+            self.drawAdjacencyEdges(screen)
+        self.drawNodes(screen)
         self.drawDominants(screen)
         self.drawGoals(screen)
-
-    def drawAdjacencyGraph(self, screen):
-        self.drawAdjacencyEdges(screen)
-        self.drawAdjacencyNodes(screen)
-        self.drawDominants(screen)
-        self.drawGoals(screen)
-
     # If isField is set to True, draw the field from graph,
     # otherwise draw the graph (with edges instead of kicks)
 
-    def run(self, display_type):
+    def run(self, display_type, collide_type = False):
         pygame.init()
         screen = pygame.display.set_mode(self.size)
         running = True
+        self.collide = collide_type
+        draw = None
+        if display_type == DISPLAY_GRAPH:
+            draw = self.drawGraph
+        if display_type == DISPLAY_FIELD:
+            draw = self.drawDictField if isinstance(self.graph, GraphWithDict) else self.drawAdjancencyField
 
-        draw = self.drawAdjacencyGraph if display_type == DISPLAY_GRAPH else self.drawAdjancencyField
-        if isinstance(self.graph, GraphWithDict):
-            draw = self.drawDictGraph if display_type == DISPLAY_GRAPH else self.drawDictField
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
