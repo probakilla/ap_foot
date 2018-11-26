@@ -3,13 +3,13 @@
 ## Instalation des modules python
 
 ```bash
-pip install doc/requirements.txt
+pip install -r ressources/requirements.txt
 ```
 
 ## Lancement du programme
 
 ```bash
-python main.py <fichier_configuration>
+python src/main.py <fichier_configuration>
 ```
 
 ## Lancement des tests
