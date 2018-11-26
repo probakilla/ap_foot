@@ -11,14 +11,56 @@ from graph.graph import GraphWithAdjacencyMatrix
 from graph.node import Node
 from matplotlib.patches import Circle
 
+ADJACENCY = 1
+DICT = 2
+DICT_OLD = 3
 
-def buildGraphWithDict(problem):
-    ''' First version of the graph building algorithm build an instance
-    of GraphWithDict '''
+
+def buildGraph(problem, buildWith):
+    if buildWith == DICT_OLD:
+        return buildGraphWithDict(problem)
+
+    nodes = generateDefenders(problem)
+    graph = GraphWithDict() if buildWith == DICT else GraphWithAdjacencyMatrix()
+
+    for i in range(problem.getNbOpponents()):
+        ofender = problem.getOpponent(i)
+
+        shootings = []
+        for g in problem.goals:
+            for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):
+                goalIntersection = g.kickResult(ofender, theta)
+                if goalIntersection is not None:
+                    atkNode = Node(Point(ofender[0], ofender[1]), theta)
+                    shootings.append({"atk": atkNode, "intersect": goalIntersection})
+                    if buildWith == ADJACENCY:
+                        graph.addAtk(atkNode)
+
+        circ = Circle(ofender, problem.robot_radius)
+        for defender in nodes:
+            if not circ.contains_point(defender):
+                listInterceptedShoot = []
+                for shoot in shootings:
+                    shootInterception = segmentCircleIntersection(ofender, shoot["intersect"], defender, problem.robot_radius)
+                    if shootInterception is not None:
+                        listInterceptedShoot += [shoot]
+                if len(listInterceptedShoot) > 0:
+                    defNode = Node(Point(defender[0], defender[1]))
+                    graph.addNode(defNode)
+                    for interceptedShoot in listInterceptedShoot:
+                        graph.addEdge(interceptedShoot["atk"], defNode)
+    return graph
+
+
+def generateDefenders(problem):
     nodes = []
     for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(), problem.pos_step):
         for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(), problem.pos_step):
             nodes.append([i, j])
+    return nodes
+
+def buildGraphWithDict(problem):
+    nodes = generateDefenders(problem)
 
     graph = GraphWithDict()
 
@@ -45,83 +87,4 @@ def buildGraphWithDict(problem):
                             graph.addNode(defNode)
                             graph.addEdge(shooting["atk"], defNode)
 
-    return graph
-
-
-def buildGraphWithDictV2(problem):
-    ''' Second version of graph building, retrieves an instance of
-    GraphWithDict '''
-    nodes = []
-    for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(),
-                       problem.pos_step):
-        for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(),
-                           problem.pos_step):
-            nodes.append([i, j])
-
-    graph = GraphWithDict()
-
-    for i in range(problem.getNbOpponents()):
-        ofender = problem.getOpponent(i)
-
-        shootings = []
-        for g in problem.goals:
-            for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):
-                goalIntersection = g.kickResult(ofender, theta)
-                if goalIntersection is not None:
-                    atkNode = Node(Point(ofender[0], ofender[1]), theta)
-                    shootings.append(
-                        {"atk": atkNode, "intersect": goalIntersection})
-
-        circ = Circle(ofender, problem.robot_radius)
-        for defender in nodes:
-            if not circ.contains_point(defender):
-                listInterceptedShoot = []
-                for shoot in shootings:
-                    shootInterception = segmentCircleIntersection(ofender, shoot["intersect"], defender, problem.robot_radius)
-                    if shootInterception is not None:
-                        listInterceptedShoot += [shoot]
-                if len(listInterceptedShoot) > 0:
-                    defNode = Node(Point(defender[0], defender[1]))
-                    graph.addNode(defNode)
-                    for interceptedShoot in listInterceptedShoot:
-                        graph.addEdge(interceptedShoot["atk"], defNode)
-    return graph
-
-
-def buildGraphWithAdjacencyMatrix(problem):
-    ''' Build an instance of GraphWithAdjacencyMatrix for a given problem '''
-    nodes = []
-    for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(), problem.pos_step):
-        for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(), problem.pos_step):
-            nodes.append([i, j])
-
-    graph = GraphWithAdjacencyMatrix()
-
-    for indexOpp in range(problem.getNbOpponents()):
-        ofender = problem.getOpponent(indexOpp)
-
-        shootings = []
-        for goal in problem.goals:
-            for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):
-                goalIntersection = goal.kickResult(ofender, theta)
-                if goalIntersection is not None:
-                    atkNode = Node(Point(ofender[0], ofender[1]), theta)
-                    shootings.append(
-                        {"atk": atkNode, "intersect": goalIntersection})
-                    graph.addAtk(atkNode)
-
-        circ = Circle(ofender, problem.robot_radius)
-        for defender in nodes:
-            if not circ.contains_point(defender):
-                listInterceptedShoot = []
-                for shoot in shootings:
-                    shootInterception = segmentCircleIntersection(
-                        ofender, shoot["intersect"], defender, problem.robot_radius)
-                    if shootInterception is not None:
-                        listInterceptedShoot += [shoot]
-                if len(listInterceptedShoot) > 0:
-                    defNode = Node(Point(defender[0], defender[1]))
-                    graph.addNode(defNode)
-                    for interceptedShoot in listInterceptedShoot:
-                        graph.addEdge(interceptedShoot["atk"], defNode)
     return graph

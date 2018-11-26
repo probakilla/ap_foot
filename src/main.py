@@ -2,9 +2,7 @@ import json
 import sys
 import cProfile
 import time
-from algo.buildGraph import buildGraphWithAdjacencyMatrix
-from algo.buildGraph import buildGraphWithDict
-from algo.buildGraph import buildGraphWithDictV2
+from algo.buildGraph import buildGraph, ADJACENCY, DICT, DICT_OLD
 from inputOutput.display import Display, DISPLAY_GRAPH, DISPLAY_FIELD
 from inputOutput.problem import Problem
 from algo.algo import minDominatingSet
@@ -21,7 +19,7 @@ def main(argv):
 
     startTime = time.time()
 
-    gAdj = buildGraphWithAdjacencyMatrix(problem)
+    gAdj = buildGraph(problem, ADJACENCY)
     print("Taille du graphe : ", len(gAdj.getListNode()))
     print("--- Build graph Adjacency in %s seconds ---" % (time.time() - startTime))
 
@@ -29,7 +27,7 @@ def main(argv):
     # print("Taille du graphe : ", len(g.graphDict))
     # print("--- Build graph with dict V1 in %s seconds ---" % (time.time() - startTime))
 
-    g = buildGraphWithDictV2(problem)
+    g = buildGraph(problem, DICT)
     print("Taille du graphe : ", len(g.graphDict))
     print("--- Build graph with dict V1 in %s seconds ---" % (time.time() - startTime))
 
@@ -37,7 +35,7 @@ def main(argv):
     # print(minDominatingSet(g, 10))
     # print("--- Find dominating set in %s seconds ---" % (time.time() - startTime))
 
-    display = Display(gAdj, problem)
+    display = Display(g, problem)
     #DISPLAY_FIELD OR DISPLAY_GRAPH
     display.run(DISPLAY_GRAPH)
 
