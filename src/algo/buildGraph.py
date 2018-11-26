@@ -36,9 +36,9 @@ def buildGraph(problem, buildWith):
                     if buildWith == ADJACENCY:
                         graph.addAtk(atkNode)
 
-        circ = Circle(ofender, problem.robot_radius)
+        ofender_circle = Circle(ofender, problem.robot_radius)
         for defender in nodes:
-            if not circ.contains_point(defender):
+            if not ofender_circle.contains_point(defender):
                 listInterceptedShoot = []
                 for shoot in shootings:
                     shootInterception = segmentCircleIntersection(ofender, shoot["intersect"], defender, problem.robot_radius)
@@ -49,6 +49,13 @@ def buildGraph(problem, buildWith):
                     graph.addNode(defNode)
                     for interceptedShoot in listInterceptedShoot:
                         graph.addEdge(interceptedShoot["atk"], defNode)
+
+                    defender_circle = Circle(defender, problem.robot_radius)
+                    defenders = graph.getDefNodes() if buildWith == DICT else graph.getListDefNodes()
+                    for d in defenders:
+                        if defender_circle.contains_point(d.getPos()):
+                            graph.addEdge(defNode, d)
+
     return graph
 
 
