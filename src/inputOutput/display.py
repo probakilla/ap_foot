@@ -12,17 +12,19 @@ DISPLAY_GRAPH = 2
 
 
 class Display(object):
-    def __init__(self, graph, problem):
+    def __init__(self, graph, problem, dominantList=None):
         self.graph = graph
         self.size = numpy.array([1500, 1000])
         self.problem = problem
         self.goalThickness = 5
+        self.dominantList = dominantList
         # Colors
         self.backgroundColor = (0, 0, 0)
         self.defColor = (0, 0, 255)
         self.atkColor = (255, 0, 0)
         self.edgeColor = (100, 100, 100)
         self.goalColor = (255, 255, 255)
+        self.domColor = (255, 105, 180)
         self.failureColor = (255, 0, 0)
 
     def getRatio(self):
@@ -51,6 +53,14 @@ class Display(object):
             else:
                 pygame.draw.circle(screen, self.defColor, self.getPixelFromField(
                     (node.pos.x, node.pos.y)), int(self.problem.robot_radius * self.getRatio() / 2))
+
+    def drawDominants(self, screen):
+        if self.dominantList is not None:
+            for node in self.dominantList:
+                pygame.draw.circle(screen, self.domColor,
+                                    self.getPixelFromField(
+                                        (node.pos.x, node.pos.y)),
+                                    int(self.problem.robot_radius * self.getRatio() / 2))
 
     def drawAdjacencyNodes(self, screen):
         for node in self.graph.getListNode():
@@ -85,7 +95,8 @@ class Display(object):
                 if adjacencyMatrix[edgeIndex]:
                     edge = listNode[edgeIndex]
                     pos2 = (edge.pos.x, edge.pos.y)
-                    self.drawSegmentInField(screen, self.edgeColor, pos1, pos2, 1)
+                    self.drawSegmentInField(
+                        screen, self.edgeColor, pos1, pos2, 1)
 
     def drawKickRay(self, screen, robot_pos, kick_dir):
         # Getting closest goal to score
@@ -142,24 +153,27 @@ class Display(object):
 
     def drawDictField(self, screen):
         self.drawDictNodes(screen)
+        self.drawDominants(screen)
         self.drawGoals(screen)
         self.drawKickRays(screen)
 
     def drawAdjancencyField(self, screen):
         self.drawAdjacencyNodes(screen)
+        self.drawDominants(screen)
         self.drawGoals(screen)
         self.drawKickRaysAdj(screen)
 
     def drawDictGraph(self, screen):
         self.drawDictEdges(screen)
         self.drawDictNodes(screen)
+        self.drawDominants(screen)
         self.drawGoals(screen)
 
     def drawAdjacencyGraph(self, screen):
         self.drawAdjacencyEdges(screen)
         self.drawAdjacencyNodes(screen)
+        self.drawDominants(screen)
         self.drawGoals(screen)
-
 
     # If isField is set to True, draw the field from graph,
     # otherwise draw the graph (with edges instead of kicks)
@@ -169,10 +183,9 @@ class Display(object):
         screen = pygame.display.set_mode(self.size)
         running = True
 
-        f = self.drawAdjacencyGraph if display_type == DISPLAY_GRAPH else self.drawAdjancencyField
+        draw = self.drawAdjacencyGraph if display_type == DISPLAY_GRAPH else self.drawAdjancencyField
         if isinstance(self.graph, GraphWithDict):
-            f = self.drawDictGraph if display_type == DISPLAY_GRAPH else self.drawDictField
-
+            draw = self.drawDictGraph if display_type == DISPLAY_GRAPH else self.drawDictField
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -181,5 +194,5 @@ class Display(object):
             if keys[pygame.K_ESCAPE]:
                 running = False
             screen.fill(self.backgroundColor)
-            f(screen)
+            draw(screen)
             pygame.display.flip()

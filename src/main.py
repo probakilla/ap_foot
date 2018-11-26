@@ -34,8 +34,7 @@ def main(argv):
     startTime = time.time()
     # print(minDominatingSet(g, 10))
     # print("--- Find dominating set in %s seconds ---" % (time.time() - startTime))
-
-    display = Display(g, problem)
+    display = Display(g, problem, g.graphDict)
     #DISPLAY_FIELD OR DISPLAY_GRAPH
     display.run(DISPLAY_GRAPH)
 
