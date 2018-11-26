@@ -13,7 +13,7 @@ DISPLAY_GRAPH = 2
 
 
 class Display(object):
-    def __init__(self, graph, problem ,dominantList=list()):
+    def __init__(self, graph, problem, dominantList=list()):
         self.graph = graph
         self.size = numpy.array([1500, 1000])
         self.problem = problem
@@ -58,7 +58,7 @@ class Display(object):
                 pygame.draw.circle(screen, self.defColor, self.getPixelFromField(
                     (node.pos.x, node.pos.y)), int(self.problem.robot_radius * self.getRatio()))
 
-    def getGraphListNode (self):
+    def getGraphListNode(self):
         if isinstance(self.graph, GraphWithDict):
             return self.graph.graphDict
         if isinstance(self.graph, GraphWithAdjacencyMatrix):
@@ -68,10 +68,9 @@ class Display(object):
         if self.dominantList is not None:
             for node in self.dominantList:
                 pygame.draw.circle(screen, self.domColor,
-                                    self.getPixelFromField(
-                                        (node.pos.x, node.pos.y)),
-                                    int(self.problem.robot_radius * self.getRatio()))
-
+                                   self.getPixelFromField(
+                                       (node.pos.x, node.pos.y)),
+                                   int(self.problem.robot_radius * self.getRatio()))
 
     def drawSegmentInField(self, screen, color, pos1, pos2, thickness):
         start = self.getPixelFromField(pos1)
@@ -144,13 +143,7 @@ class Display(object):
             self.drawSegmentInField(screen, self.goalColor, goal.posts[:, 0],
                                     goal.posts[:, 1], self.goalThickness)
 
-    def drawDictField(self, screen):
-        self.drawNodes(screen)
-        self.drawDominants(screen)
-        self.drawGoals(screen)
-        self.drawKickRays(screen)
-
-    def drawAdjancencyField(self, screen):
+    def drawField(self, screen):
         self.drawNodes(screen)
         self.drawDominants(screen)
         self.drawGoals(screen)
@@ -167,16 +160,14 @@ class Display(object):
     # If isField is set to True, draw the field from graph,
     # otherwise draw the graph (with edges instead of kicks)
 
-    def run(self, display_type, collide_type = False):
+    def run(self, display_type, collide_type=False):
         pygame.init()
         screen = pygame.display.set_mode(self.size)
         running = True
         self.collide = collide_type
         draw = None
-        if display_type == DISPLAY_GRAPH:
-            draw = self.drawGraph
-        if display_type == DISPLAY_FIELD:
-            draw = self.drawDictField if isinstance(self.graph, GraphWithDict) else self.drawAdjancencyField
+
+        draw = self.drawGraph if display_type == DISPLAY_GRAPH else self.drawField
 
         while running:
             for event in pygame.event.get():
