@@ -42,13 +42,13 @@ def remainsUndominatedAttacker(graph, dominatedNode):
 
 
 def minDominationSetOkan(graph, k):
-    attacks = graph.getAtkNodes()
+    attacks = graph.getAttacks()
+    defenders = graph.getDefenders()
 
     for nbdefender in range(1, k + 1):
-        defenders = graph.getDefNodes()
         for bits in itertools.combinations(range(len(defenders)), nbdefender):
 
-            atks = attacks.copy()
+            attacks_tmp = attacks.copy()
 
             for defIdx in bits:
                 defender = defenders[defIdx]
@@ -58,10 +58,10 @@ def minDominationSetOkan(graph, k):
                     return {defender}
                 else:
                     for shot in shotsStopped:
-                        if shot in atks:
-                            atks.remove(shot)
+                        if shot in attacks_tmp:
+                            attacks_tmp.remove(shot)
 
-            if len(atks) == 0:
+            if len(attacks_tmp) == 0:
                 dominatingSet = set()
                 for defIdx in bits:
                     dominatingSet.add(defenders[defIdx])
