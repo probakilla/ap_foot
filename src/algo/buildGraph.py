@@ -4,8 +4,6 @@ import numpy as np
 from algo.geometry import Point
 from algo.geometry import segmentCircleIntersection
 from algo.geometry import getDistance
-from algo.geometry import moveInLine
-from algo.geometry import getDistancePts
 from graph.graph import GraphWithDict
 from graph.graph import GraphWithAdjacencyMatrix
 from graph.node import Node
@@ -50,11 +48,11 @@ def buildGraph(problem, buildWith):
                     for interceptedShoot in listInterceptedShoot:
                         graph.addEdge(interceptedShoot["atk"], defNode)
 
-                    defender_circle = Circle(defender, problem.robot_radius)
+                    '''defender_circle = Circle(defender, problem.robot_radius)
                     defenders = graph.getDefNodes() if buildWith == DICT else graph.getListDefNodes()
                     for d in defenders:
                         if defender_circle.contains_point(d.getPos()):
-                            graph.addEdge(defNode, d)
+                            graph.addEdge(defNode, d)'''
 
     return graph
 
@@ -65,6 +63,7 @@ def generateDefenders(problem):
         for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(), problem.pos_step):
             nodes.append([i, j])
     return nodes
+
 
 def buildGraphWithDict(problem):
     nodes = generateDefenders(problem)

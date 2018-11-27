@@ -5,7 +5,7 @@ import time
 from algo.buildGraph import buildGraph, ADJACENCY, DICT, DICT_OLD
 from inputOutput.display import Display, DISPLAY_GRAPH, DISPLAY_FIELD
 from inputOutput.problem import Problem
-from algo.algo import minDominatingSet
+from algo.algo import minDominatingSet, minDominationSetOkan
 
 
 def main(argv):
@@ -32,10 +32,11 @@ def main(argv):
     print("--- Build graph with dict V1 in %s seconds ---" % (time.time() - startTime))
 
     startTime = time.time()
-    # print(minDominatingSet(g, 10))
-    # print("--- Find dominating set in %s seconds ---" % (time.time() - startTime))
-    display = Display(g, problem, g.graphDict)
-    #DISPLAY_FIELD OR DISPLAY_GRAPH
+    dominatingSet = minDominationSetOkan(g, 10)
+    print("--- Find dominating set in %s seconds ---" % (time.time() - startTime))
+    print("il faut", len(dominatingSet), "défenseurs")
+    display = Display(g, problem, dominatingSet)
+    # DISPLAY_FIELD OR DISPLAY_GRAPH
     display.run(DISPLAY_FIELD)
 
     return True
