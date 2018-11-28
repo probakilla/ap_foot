@@ -3,37 +3,6 @@ import copy
 import itertools
 
 
-def minDominatingSet(graph, maxDominatingSetLength):
-    ''' Find the minimum dominating set for a given set max length '''
-    markedNodes = set()
-    removedNodes = set()
-    queue = [(markedNodes, removedNodes)]
-    removedNodesChecked = list()
-    while len(queue) != 0:
-        markedAndRemovedNodes = queue.pop(0)
-        markedNodes = markedAndRemovedNodes[0]
-        removedNodes = markedAndRemovedNodes[1]
-        for currentNode in graph.graphDict:
-            if currentNode not in markedNodes and not currentNode.isAtk():
-                currentRemovedNodes = removedNodes.copy()
-                currentMarkedNodes = markedNodes.copy()
-                lenCurrentRemovedNodes = len(currentRemovedNodes)
-                if lenCurrentRemovedNodes == maxDominatingSetLength:
-                    break
-                if lenCurrentRemovedNodes > maxDominatingSetLength:
-                    return None
-                currentMarkedNodes.add(currentNode)
-                currentRemovedNodes.add(currentNode)
-                for neighboorNode in graph.graphDict[currentNode]:
-                    currentMarkedNodes.add(neighboorNode)
-                if not remainsUndominatedAttacker(graph, currentMarkedNodes):
-                    return currentRemovedNodes
-                if currentRemovedNodes not in removedNodesChecked:
-                    removedNodesChecked.append(currentRemovedNodes)
-                    queue.append((currentMarkedNodes, currentRemovedNodes))
-    return None
-
-
 def remainsUndominatedAttacker(graph, dominatedNode):
     for node in graph.graphDict:
         if node.isAtk() and node not in dominatedNode:
@@ -51,8 +20,15 @@ def isDominatingSet(graph, dominatingSet):
             return False
     return True
 
+def minDominatingSetGuillaume(graph, k):
+    listDefender = graph.getDefenders()
+    for nbdefender in range(1, k + 1):
+        for defenderCombination in itertools.combinations(listDefender, nbdefender):
+            if isDominatingSet(graph, defenderCombination):
+                return defenderCombination
+    return None
 
-def minDominationSetOkan(graph, k):
+def minDominatingSetOkan(graph, k):
     attacks = graph.getAttacks()
     defenders = graph.getDefenders()
 
