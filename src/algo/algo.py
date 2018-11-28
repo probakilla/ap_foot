@@ -40,6 +40,17 @@ def remainsUndominatedAttacker(graph, dominatedNode):
             return True
     return False
 
+def isDominatingSet(graph, dominatingSet):
+    dominatedNodeList = set()
+    for node in dominatingSet:
+        for neighboorNode in graph.graphDict[node]:
+            if neighboorNode.isAtk():
+                dominatedNodeList.add(neighboorNode)
+    for atkNode in graph.getAttacks():
+        if atkNode not in dominatedNodeList:
+            return False
+    return True
+
 
 def minDominationSetOkan(graph, k):
     attacks = graph.getAttacks()
