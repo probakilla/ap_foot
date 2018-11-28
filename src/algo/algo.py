@@ -12,9 +12,9 @@ def remainsUndominatedAttacker(graph, dominatedNode):
 def isDominatingSet(graph, dominatingSet):
     dominatedNodeList = set()
     for node in dominatingSet:
-        for neighboorNode in graph.graphDict[node]:
-            if neighboorNode.isAtk():
-                dominatedNodeList.add(neighboorNode)
+        for neighbourNode in graph.getNeighbourhood(node):
+            if neighbourNode.isAtk():
+                dominatedNodeList.add(neighbourNode)
     for atkNode in graph.getAttacks():
         if atkNode not in dominatedNodeList:
             return False

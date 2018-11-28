@@ -17,8 +17,7 @@ def main(argv):
     with open(problem_path) as problem_file:
         problem = Problem(json.load(problem_file))
 
-    startTime = time.time()
-
+    # startTime = time.time()    
     # gAdj = buildGraph(problem, ADJACENCY)
     # print("Taille du graphe : ", len(gAdj.getListNode()))
     # print("--- Build graph Adjacency in %s seconds ---" % (time.time() - startTime))
@@ -26,7 +25,8 @@ def main(argv):
     # g = buildGraphWithDict(problem)
     # print("Taille du graphe : ", len(g.graphDict))
     # print("--- Build graph with dict V1 in %s seconds ---" % (time.time() - startTime))
-
+    
+    startTime = time.time()
     g = buildGraph(problem, DICT)
     print("Taille du graphe : ", len(g.graphDict))
     print("--- Build graph with dict in %s seconds ---" % (time.time() - startTime))

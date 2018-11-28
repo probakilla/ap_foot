@@ -16,7 +16,7 @@ YMINPOS = -10.0
 
 class TestGraphMethods(unittest.TestCase):
 
-    def buildRandomGraph(self, lenght, nbMaxNeighboor):
+    def buildRandomGraph(self, lenght, nbMaxNeighbour):
         g = GraphWithDict()
         nbAtk = random.randint(1, lenght)
         nbDef = lenght - nbAtk
@@ -33,14 +33,14 @@ class TestGraphMethods(unittest.TestCase):
             g.addNode(node)
         for node in g.graphDict:
             if g.graphDict[node] == []:
-                possibleNeighboor = random.sample(
-                    g.graphDict.keys(), random.randint(1, nbMaxNeighboor))
-                for neighboor in possibleNeighboor:
-                    if neighboor != node:
-                        if isinstance(node, Node) and isinstance(neighboor, Node):
-                            g.addEdge(node, neighboor)
+                possibleNeighbour = random.sample(
+                    g.graphDict.keys(), random.randint(1, nbMaxNeighbour))
+                for neighbour in possibleNeighbour:
+                    if neighbour != node:
+                        if isinstance(node, Node) and isinstance(neighbour, Node):
+                            g.addEdge(node, neighbour)
                         if isinstance(node, Node):
-                            g.addEdge(node, neighboor)
+                            g.addEdge(node, neighbour)
         return g
 
     def testAddNode(self):

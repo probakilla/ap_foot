@@ -23,8 +23,8 @@ class GraphWithDict(object):
         for node in self.graphDict:
             strNode = node.__str__()
             strNode += ": ["
-            for neighboorNode in self.graphDict[node]:
-                strNode += neighboorNode.__str__()
+            for neighbourNode in self.graphDict[node]:
+                strNode += neighbourNode.__str__()
                 strNode += ", "
             strNode += "]\n"
             res += strNode
@@ -73,6 +73,9 @@ class GraphWithDict(object):
             if not node.isAtk():
                 defNodes.append(node)
         return defNodes
+    
+    def getNeighbourhood(self, node):
+        return self.graphDict[node]
 
     def listEdges(self):
         ''' Retrieves a list of all edges in the graph '''
@@ -96,9 +99,9 @@ class GraphWithAdjacencyMatrix(object):
         for indexNode in range(len(self.listNode)):
             strNode += self.listNode[indexNode].__str__()
             strNode += ": ["
-            for indexNeighboor in range(len(self.adjacencyMatrix[indexNode])):
-                if self.adjacencyMatrix[indexNode][indexNeighboor]:
-                    strNode += self.listNode[indexNeighboor].__str__()
+            for indexNeighbour in range(len(self.adjacencyMatrix[indexNode])):
+                if self.adjacencyMatrix[indexNode][indexNeighbour]:
+                    strNode += self.listNode[indexNeighbour].__str__()
             strNode += "]\n"
         return strNode
 
@@ -124,6 +127,16 @@ class GraphWithAdjacencyMatrix(object):
             del res[i]
         return res
 
+    # Bien trop lent
+    def getNeighbourhood(self, node):
+        listNeighbourNode = list()
+        indexNode = self.listNode.index(node)
+        for indexNeighbourNode in self.adjacencyMatrix[indexNode]:
+            if self.adjacencyMatrix[indexNode][indexNeighbourNode]:
+                listNeighbourNode.append(self.listNode[indexNeighbourNode])
+        return listNeighbourNode
+
+
     def addAtk(self, node):
         ''' Add a node in the list and its corresponding index in a list
         used to find him in the list '''
@@ -143,3 +156,4 @@ class GraphWithAdjacencyMatrix(object):
         indexNode1 = self.listNode.index(node1)
         indexNode2 = self.listNode.index(node2)
         self.adjacencyMatrix[indexNode1][indexNode2] = True
+        self.adjacencyMatrix[indexNode2][indexNode1] = True
