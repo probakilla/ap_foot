@@ -33,10 +33,25 @@ class GraphWithDict(object):
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
+    def copy(self):
+        graph = GraphWithDict()
+        graph.graphDict = self.graphDict.copy()
+        return graph
+
     def addNode(self, node):
         ''' Add a node in the dictionary member '''
         if node not in self.graphDict:
             self.graphDict[node] = []
+    
+    def removeNeighbour(self, node):
+        for neighbourgNode in self.graphDict[node]:
+            self.removeNode(neighbourgNode)
+
+    def removeNode(self, node):
+        print("test")
+        for neighbourgNode in self.graphDict[node]:         
+            del self.graphDict[neighbourgNode][self.graphDict[neighbourgNode].index(node)]
+        del self.graphDict[node]
 
     def addEdge(self, node1, node2):
         ''' Add an edge between the two nodes '''
@@ -85,6 +100,15 @@ class GraphWithDict(object):
                 listEdges.append((node, edge))
         return listEdges
 
+    def nodeDegre(self, node):
+        return len(self.graphDict[node])
+    
+    def getDefenderDegreMax(self):
+        defenderDegreMax = next(iter(self.graphDict))
+        for node in self.graphDict:
+            if not node.isAtk() and self.nodeDegre(node) > self.nodeDegre(defenderDegreMax):
+                defenderDegreMax = node
+        return defenderDegreMax
 
 class GraphWithAdjacencyMatrix(object):
     ''' A representation of a graph with a list of nodes and a two

@@ -10,15 +10,30 @@ def remainsUndominatedAttacker(graph, dominatedNode):
     return False
 
 def isDominatingSet(graph, dominatingSet):
-    dominatedNodeList = set()
+    dominatedNodeSet = set()
     for node in dominatingSet:
         for neighbourNode in graph.getNeighbourhood(node):
             if neighbourNode.isAtk():
-                dominatedNodeList.add(neighbourNode)
+                dominatedNodeSet.add(neighbourNode)
     for atkNode in graph.getAttacks():
-        if atkNode not in dominatedNodeList:
+        if atkNode not in dominatedNodeSet:
             return False
     return True
+
+
+def greedyMinDominatingSet(graph, k):
+    dominatingSet = set()
+    graphTmp = graph.copy()
+    for i in range(k): 
+        nodeDegreMax = graphTmp.getDefenderDegreMax()
+        print("degre: ", graphTmp.nodeDegre(nodeDegreMax))
+        dominatingSet.add(nodeDegreMax)
+        graphTmp.removeNeighbour(nodeDegreMax)
+        graphTmp.removeNode(nodeDegreMax)
+        print("len ", len(graphTmp.graphDict))
+        if isDominatingSet(graph, dominatingSet):
+            return dominatingSet
+    return dominatingSet
 
 def minDominatingSetGuillaume(graph, k):
     listDefender = graph.getDefenders()
