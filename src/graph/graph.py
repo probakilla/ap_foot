@@ -33,6 +33,11 @@ class GraphWithDict(object):
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
+    def addListNode(self, listNode):
+        ''' Add a list of nodes in the graph '''
+        for node in listNode:
+            self.addNode(node)
+
     def addNode(self, node):
         ''' Add a node in the dictionary member '''
         if node not in self.graphDict:
@@ -73,7 +78,7 @@ class GraphWithDict(object):
             if not node.isAtk():
                 defNodes.append(node)
         return defNodes
-    
+
     def getNeighbourhood(self, node):
         return self.graphDict[node]
 

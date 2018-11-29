@@ -4,6 +4,7 @@ import numpy as np
 from algo.geometry import Point
 from algo.geometry import segmentCircleIntersection
 from algo.geometry import getDistance
+from algo.geometry import moveInLine
 from graph.graph import GraphWithDict
 from graph.graph import GraphWithAdjacencyMatrix
 from graph.node import Node
@@ -30,7 +31,8 @@ def buildGraph(problem, buildWith):
                 goalIntersection = g.kickResult(ofender, theta)
                 if goalIntersection is not None:
                     atkNode = Node(Point(ofender[0], ofender[1]), theta)
-                    shootings.append({"atk": atkNode, "intersect": goalIntersection})
+                    shootings.append(
+                        {"atk": atkNode, "intersect": goalIntersection})
                     if buildWith == ADJACENCY:
                         graph.addAtk(atkNode)
 
@@ -39,7 +41,8 @@ def buildGraph(problem, buildWith):
             if not ofender_circle.contains_point(defender):
                 listInterceptedShoot = []
                 for shoot in shootings:
-                    shootInterception = segmentCircleIntersection(ofender, shoot["intersect"], defender, problem.robot_radius)
+                    shootInterception = segmentCircleIntersection(
+                        ofender, shoot["intersect"], defender, problem.robot_radius)
                     if shootInterception is not None:
                         listInterceptedShoot += [shoot]
                 if len(listInterceptedShoot) > 0:
@@ -47,13 +50,6 @@ def buildGraph(problem, buildWith):
                     graph.addNode(defNode)
                     for interceptedShoot in listInterceptedShoot:
                         graph.addEdge(interceptedShoot["atk"], defNode)
-
-                    '''defender_circle = Circle(defender, problem.robot_radius)
-                    defenders = graph.getDefNodes() if buildWith == DICT else graph.getListDefNodes()
-                    for d in defenders:
-                        if defender_circle.contains_point(d.getPos()):
-                            graph.addEdge(defNode, d)'''
-
     return graph
 
 
@@ -94,3 +90,57 @@ def buildGraphWithDict(problem):
                             graph.addEdge(shooting["atk"], defNode)
 
     return graph
+
+
+def buildGraphTriangle(problem):
+    ''' An optimized version of build graph, generate only needed defenders.
+    The defenders generated are in a triangle shape formation where the three
+    points of the triangle are : an ofender and the two posts of the goal
+    WORK IN PROGRESS '''
+    nodes = generateTriangleDefenders(problem)
+    graph = GraphWithDict()
+    graph.addListNode(nodes)
+
+    for i in range(problem.getNbOpponents()):
+        ofender = problem.getOpponent(i)
+
+        shootings = []
+        for g in problem.goals:
+            for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):
+                goalIntersection = g.kickResult(ofender, theta)
+                if goalIntersection is not None:
+                    atkNode = Node(Point(ofender[0], ofender[1]), theta)
+                    shootings.append(
+                        {"atk": atkNode, "intersect": goalIntersection})
+
+
+    return graph
+
+
+def generateTriangleDefenders(problem):
+    ''' Generate a triangle shaped set of defenders between goal and each
+    ofender '''
+    nodes = []
+    for opponentIndex in range(problem.getNbOpponents()):
+        ofender = problem.getOpponent(opponentIndex)
+        ofenderPos = Point(ofender[0], ofender[1])
+        for goal in problem.goals:
+            firstPost = Point.fromNumpy(goal.posts[:, 0])
+            secondPost = Point.fromNumpy(goal.posts[:, 1])
+            distFromOpp = getDistance((ofenderPos.x, ofenderPos.y), firstPost)
+            while distFromOpp > problem.pos_step:
+                movingPoint = secondPost
+                distBetweenPosts = getDistance(firstPost, movingPoint)
+                while distBetweenPosts > problem.pos_step:
+                    nodes.append(Node(movingPoint))
+                    movingPoint = moveInLine(
+                        problem.pos_step, movingPoint, firstPost)
+                    distBetweenPosts = getDistance(
+                        (firstPost.x, firstPost.y), (movingPoint.x, movingPoint.y))
+
+                firstPost = moveInLine(problem.pos_step, firstPost, ofenderPos)
+                secondPost = moveInLine(
+                    problem.pos_step, secondPost, ofenderPos)
+                distFromOpp = getDistance(
+                    (ofenderPos.x, ofenderPos.y), (firstPost.x, firstPost.y))
+    return nodes
