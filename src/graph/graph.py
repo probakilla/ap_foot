@@ -38,6 +38,19 @@ class GraphWithDict(object):
         if node not in self.graphDict:
             self.graphDict[node] = []
 
+    def removeNode(self, node):
+        listNeighbourNode = self.graphDict[node].copy()
+        for neighbourNode in listNeighbourNode:
+            self.graphDict[node].remove(neighbourNode)
+            self.graphDict[neighbourNode].remove(node)
+        del self.graphDict[node]
+
+    def removeNodeAndNeighbourhood(self, node):
+        listNeighbourNode = self.graphDict[node].copy()
+        for neighbourNode in listNeighbourNode:
+            self.removeNode(neighbourNode)
+        del self.graphDict[node]
+
     def addEdge(self, node1, node2):
         ''' Add an edge between the two nodes '''
         self.addEdgeBetweenNodes(node1, node2)
@@ -48,8 +61,11 @@ class GraphWithDict(object):
         if node1 in self.graphDict:
             if node2 not in self.graphDict[node1]:
                 self.graphDict[node1].append(node2)
+            else:
+                print("node already in neighbourhood")
         else:
-            self.graphDict[node1] = [node2]
+            print('node not in graph')
+
 
     def listNodes(self):
         ''' Retrieves the list of the nodes, corresponding of all key
@@ -74,6 +90,19 @@ class GraphWithDict(object):
                 defNodes.append(node)
         return defNodes
     
+    def getDefenderMaxDegree(self, markedNodeSet = set()):
+        ''' Retrives the defender with the maximum degrees '''
+        maxDegree = 0
+        nodeMaxDegree = None
+        for node in self.graphDict:
+            if not node.isAtk() and node not in markedNodeSet:
+                nodeDegree = len(self.graphDict[node])
+                if  (nodeDegree > maxDegree):
+                    maxDegree = nodeDegree
+                    nodeMaxDegree = node
+        return nodeMaxDegree
+
+
     def getNeighbourhood(self, node):
         return self.graphDict[node]
 
@@ -84,6 +113,9 @@ class GraphWithDict(object):
             for edge in self.graphDict[node]:
                 listEdges.append((node, edge))
         return listEdges
+    
+    def copy(self):
+        return GraphWithDict(self.graphDict.copy())
 
 
 class GraphWithAdjacencyMatrix(object):

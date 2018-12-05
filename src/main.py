@@ -2,10 +2,10 @@ import json
 import sys
 import cProfile
 import time
-from algo.buildGraph import buildGraph, ADJACENCY, DICT, DICT_OLD
+from algo.buildGraph import buildGraph, ADJACENCY, DICT, DICT_OLD, buildGraphTriangles
 from inputOutput.display import Display, DISPLAY_GRAPH, DISPLAY_FIELD
 from inputOutput.problem import Problem
-from algo.algo import minDominatingSetGuillaume, minDominatingSetOkan, isDominatingSet
+from algo.algo import minDominatingSetGuillaume, minDominatingSetOkan, isDominatingSet, greedyMinDominatingSet
 
 
 def main(argv):
@@ -17,33 +17,18 @@ def main(argv):
     with open(problem_path) as problem_file:
         problem = Problem(json.load(problem_file))
 
-    # startTime = time.time()    
-    # gAdj = buildGraph(problem, ADJACENCY)
-    # print("Taille du graphe : ", len(gAdj.getListNode()))
-    # print("--- Build graph Adjacency in %s seconds ---" % (time.time() - startTime))
-
-    # g = buildGraphWithDict(problem)
-    # print("Taille du graphe : ", len(g.graphDict))
-    # print("--- Build graph with dict V1 in %s seconds ---" % (time.time() - startTime))
-    
     startTime = time.time()
-    g = buildGraph(problem, DICT)
+    g = buildGraphTriangles(problem)
     print("Taille du graphe : ", len(g.graphDict))
     print("--- Build graph with dict in %s seconds ---" % (time.time() - startTime))
-
+    
     startTime = time.time()
-    dominatingSetGuillaume = minDominatingSetGuillaume(g, 5)
-    print("--- Find dominating set Guillaume in %s seconds ---" % (time.time() - startTime))
-    startTime = time.time()
-    dominatingSetOkan = minDominatingSetOkan(g, 5)
-    print("--- Find dominating Okan set in %s seconds ---" % (time.time() - startTime))
-    print("il faut ", len(dominatingSetGuillaume) ," defenseurs d'apres Guillaume")
-    print("il faut ", len(dominatingSetOkan) ," defenseurs d'apres Okan")
-    displayGuillaume = Display(g, problem, dominatingSetGuillaume)
+    greedyDominatingSet = greedyMinDominatingSet(g, 3)
+    print("--- Find dominating set with greedy in %s seconds ---" % (time.time() - startTime))
+    print("il faut ", len(greedyDominatingSet) ," defenseurs d'apres greedy")
+    displayGreedy = Display(g, problem, greedyDominatingSet)
     # DISPLAY_FIELD OR DISPLAY_GRAPH
-    displayGuillaume.run(DISPLAY_FIELD)
-    displayOkan = Display(g, problem, dominatingSetOkan)
-    displayOkan.run(DISPLAY_FIELD)
+    displayGreedy.run(DISPLAY_FIELD)
 
     return True
 
