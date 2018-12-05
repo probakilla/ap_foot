@@ -3,3 +3,4 @@ pygame
 numpy
 nose
 pytest
+matplotlib

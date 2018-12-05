@@ -145,3 +145,19 @@ def moveInLine(distance, translatedPoint, pointInLine):
     tmpoint = translatedPoint - pointInLine
     de = tmpoint.multiplyByNumber(distance).divideByNumber(getDistancePts(translatedPoint, pointInLine))
     return (translatedPoint - de)
+
+def pointInTriangle(toCheckPoint, ):
+    print(toCheckPoint)
+
+def triangleArea(point1, point2, point3):
+    ''' Retrieves the area of a triangle from given 3 points points should be
+    from the class Point '''
+    if (not isinstance(point1, Point) or 
+            not isinstance(point2, Point) or 
+            not isinstance(point3, Point)):
+       ValueError("Point should be an instance of Point")
+
+    area = (point1.x * (point2.y - point3.y) + \
+            point2.x * (point3.y - point1.y) + \
+            point3.x * (point1.y - point2.y))
+    return area / 2
