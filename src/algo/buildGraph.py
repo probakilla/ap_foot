@@ -44,6 +44,7 @@ def buildGraph(problem, buildWith):
                     shootInterception = segmentCircleIntersection(
                         ofender, shoot["intersect"], defender, problem.robot_radius)
                     if shootInterception is not None:
+                        graph.addNode(shoot["atk"])
                         listInterceptedShoot += [shoot]
                 if len(listInterceptedShoot) > 0:
                     defNode = Node(Point(defender[0], defender[1]))
@@ -94,7 +95,7 @@ def buildGraphWithDict(problem):
                         if shootIntersection is not None:
                             defNode = Node(Point(node[0], node[1]))
                             graph.addNode(defNode)
-                            graph.addEdge(shooting["atk"], defNode)
+                            graph.addEdge(defNode, shooting["atk"])
 
     return graph
 
