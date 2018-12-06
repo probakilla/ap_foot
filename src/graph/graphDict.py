@@ -83,7 +83,7 @@ class GraphWithDict(object):
     def getAttacksList(self):
         ''' Retrieves only the keys of the dictionary corresponding of
         an oponent '''
-        atkNodes = []
+        atkNodes = list()
         for node in self.graphDict:
             if node.isAtk():
                 atkNodes.append(node)
@@ -92,7 +92,7 @@ class GraphWithDict(object):
     def getDefendersList(self):
         ''' Retrieves only the keys of the dictionary corresponding of
         a defender '''
-        defNodes = []
+        defNodes = list() 
         for node in self.graphDict:
             if not node.isAtk():
                 defNodes.append(node)

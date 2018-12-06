@@ -50,6 +50,7 @@ def buildGraph(problem, buildWith):
                     graph.addNode(defNode)
                     for interceptedShoot in listInterceptedShoot:
                         graph.addEdge(interceptedShoot["atk"], defNode)
+    addColision(graph, problem.robot_radius * 2)
     return graph
 
 
@@ -81,3 +82,15 @@ def buildGraphWithDict(problem):
                             graph.addEdge(defNode, shooting["atk"])
 
     return graph
+
+
+def addColision(graph, minDistance):
+    defenderList = graph.getDefendersList()
+    nbDefenders = len(defenderList)
+    enumDefender = enumerate(defenderList)
+    for i, firstNode in enumDefender:
+        for indexSecondNode in range(i, nbDefenders):
+            secondNode = defenderList[indexSecondNode]
+            if firstNode != secondNode and getDistance(firstNode.getPos(), secondNode.getPos()) <= minDistance:
+                print("colide")
+                graph.addEdge(firstNode, secondNode)
