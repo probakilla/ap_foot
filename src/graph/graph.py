@@ -80,7 +80,7 @@ class GraphWithDict(object):
         of the dictionary '''
         return list(self.graphDict.keys())
 
-    def getAttacks(self):
+    def getAttacksList(self):
         ''' Retrieves only the keys of the dictionary corresponding of
         an oponent '''
         atkNodes = []
@@ -89,7 +89,7 @@ class GraphWithDict(object):
                 atkNodes.append(node)
         return atkNodes
 
-    def getDefenders(self):
+    def getDefendersList(self):
         ''' Retrieves only the keys of the dictionary corresponding of
         a defender '''
         defNodes = []
@@ -156,14 +156,14 @@ class GraphWithAdjacencyMatrix(object):
         ''' Getter on the matrix '''
         return self.adjacencyMatrix
 
-    def getAttacks(self):
+    def getAttacksList(self):
         ''' Retrieves a list containing only the oponents '''
         res = list()
         for i in self.listIndexAtk:
             res.append(self.listNode[i])
         return res
 
-    def getDefenders(self):
+    def getDefendersList(self):
         ''' Retrieves a list containing only the defenders '''
         res = list(self.listNode)
         for i in self.listIndexAtk[::-1]:
