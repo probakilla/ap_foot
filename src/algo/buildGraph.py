@@ -31,10 +31,9 @@ def buildGraph(problem, buildWith):
                 goalIntersection = g.kickResult(ofender, theta)
                 if goalIntersection is not None:
                     atkNode = Node(Point(ofender[0], ofender[1]), theta)
+                    graph.addNode(atkNode)
                     shootings.append(
                         {"atk": atkNode, "intersect": goalIntersection})
-                    if buildWith == ADJACENCY:
-                        graph.addAtk(atkNode)
 
         ofender_circle = Circle(ofender, problem.robot_radius)
         for defender in nodes:
@@ -42,9 +41,9 @@ def buildGraph(problem, buildWith):
                 listInterceptedShoot = []
                 for shoot in shootings:
                     shootInterception = segmentCircleIntersection(
-                        ofender, shoot["intersect"], defender, problem.robot_radius)
+                        ofender, shoot["intersect"],
+                        defender, problem.robot_radius)
                     if shootInterception is not None:
-                        graph.addNode(shoot["atk"])
                         listInterceptedShoot += [shoot]
                 if len(listInterceptedShoot) > 0:
                     defNode = Node(Point(defender[0], defender[1]))

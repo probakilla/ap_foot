@@ -4,6 +4,7 @@ from algo.geometry import Point
 
 
 class Triangle(object):
+    EPSILON = 0.001
     ''' This class contains 3 points that should be an instance of the Point
     class '''
 
@@ -25,7 +26,8 @@ class Triangle(object):
         area1 = Triangle.triangleArea(toCheckPoint, self.point1, self.point2)
         area2 = Triangle.triangleArea(toCheckPoint, self.point2, self.point3)
         area3 = Triangle.triangleArea(toCheckPoint, self.point1, self.point3)
-        return abs((abs(area1) + abs(area2) + abs(area3)) - self.getArea()) < 0.001
+        return abs((abs(area1) + abs(area2) + abs(area3)) - \
+                self.getArea()) < self.EPSILON
 
     def getArea(self):
         ''' Retrieves the area of the triangle '''

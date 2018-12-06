@@ -1,7 +1,8 @@
 ''' Specific node representation of offender and defenders '''
 
 class Node(object):
-    ''' Representation of a node in a graph with a position and an angle.
+    EPSILON = 0.001
+    ''' Representation of a node in a graph with a position and an angle
     Nodes with a None angle are considered as defenders '''
     def __init__(self, pos, angle=None):
         self.pos = pos
@@ -18,7 +19,14 @@ class Node(object):
         return self.pos, self.angle
 
     def __eq__(self, node):
-        return self.angle == node.angle and self.pos == node.pos
+        # Both defenders
+        if self.angle == None and node.angle == None:
+            return self.pos == node.pos
+        # Both attacker
+        elif self.angle != None and node.angle != None:
+            return self.angle - node.angle < self.EPSILON and \
+                    self.pos == node.pos
+        return False
 
     def __hash__(self):
         return hash(self.__key())

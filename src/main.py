@@ -31,7 +31,7 @@ def main(argv):
     # print("il faut", len(dominatingSet), "défenseurs")
 
     display = Display(graph, problem)
-    display.run(DISPLAY_FIELD, True)
+    display.run(DISPLAY_GRAPH, True)
     return True
 
 
