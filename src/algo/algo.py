@@ -28,6 +28,32 @@ def minDominatingSetGuillaume(graph, k):
                 return defenderCombination
     return None
 
+def greedyMinDominatingSet(graph, k):
+    dominatingSet = set()
+    graphCpy = copy.deepcopy(graph)
+    for _ in range(k + 1):
+        if (len(graphCpy.getDefenders()) == 0):
+            return None
+        nodeMaxDegree = graphCpy.getDefenderMaxDegree()
+        dominatingSet.add(nodeMaxDegree)
+        graphCpy.removeNodeAndNeighbourhood(nodeMaxDegree)
+        graph.graphDict[nodeMaxDegree]
+        if isDominatingSet(graph, dominatingSet):
+            return dominatingSet
+    return None
+        # Piste de solution sans deepcopy
+    #     dominatingSet = set()
+    # markedNodeSet = set()
+    # for _ in range(k + 1):
+    #     nodeMaxDegree = graph.getDefenderMaxDegree(markedNodeSet)
+    #     dominatingSet.add(nodeMaxDegree)
+    #     markedNodeSet.add(nodeMaxDegree)
+    #     for neighbourNode in graph.getNeighbourhood(nodeMaxDegree):
+    #         markedNodeSet.add(neighbourNode)
+    #     if isDominatingSet(graph, dominatingSet):
+    #         return dominatingSet
+    # return dominatingSet
+
 def minDominatingSetOkan(graph, k):
     attacks = graph.getAttacks()
     defenders = graph.getDefenders()
