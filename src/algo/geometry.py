@@ -94,12 +94,13 @@ def newPointFromDistance(p1, p2, dt):
     yt = (1 - t) * p1.y + t * p2.y
     return Point(round(xt, 5), round(yt, 5))
 
+
 def getDistancePts(p1, p2):
     return getDistance([p1.x, p1.y], [p2.x, p2.y])
 
+
 def getDistance(p1, p2):
     return math.hypot(p2[0] - p1[0], p2[1] - p1[1])
-
 
 
 """
@@ -154,10 +155,13 @@ def segmentCircleIntersection(seg_start, seg_end, circle_center, circle_radius):
     offset_length = math.sqrt(circle_radius ** 2 - dist ** 2)  # Pythagore
     return normal_intersection - offset_length * seg_dir
 
+
 def moveInLine(distance, translatedPoint, pointInLine):
     tmpoint = translatedPoint - pointInLine
-    de = tmpoint.multiplyByNumber(distance).divideByNumber(getDistancePts(translatedPoint, pointInLine))
+    de = tmpoint.multiplyByNumber(distance).divideByNumber(
+        getDistancePts(translatedPoint, pointInLine))
     return (translatedPoint - de)
+
 
 def triangleArea(point1, point2, point3):
     ''' Retrieves the area of a triangle from given 3 points points should be
@@ -165,9 +169,9 @@ def triangleArea(point1, point2, point3):
     if (not isinstance(point1, Point) or
             not isinstance(point2, Point) or
             not isinstance(point3, Point)):
-       ValueError("Point should be an instance of Point")
+        ValueError("Point should be an instance of Point")
 
-    area = (point1.x * (point2.y - point3.y) + \
-            point2.x * (point3.y - point1.y) + \
+    area = (point1.x * (point2.y - point3.y) +
+            point2.x * (point3.y - point1.y) +
             point3.x * (point1.y - point2.y))
     return area / 2

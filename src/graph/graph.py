@@ -44,6 +44,7 @@ class GraphWithDict(object):
             self.graphDict[node] = []
         else:
             print("node already in graph")
+            print(node)
 
     def removeNode(self, node):
         listNeighbourNode = self.graphDict[node].copy()

@@ -1,5 +1,5 @@
 ''' This file helps to manage a triangle in the field '''
-
+import numpy as np
 from algo.geometry import Point
 
 
@@ -34,17 +34,17 @@ class Triangle(object):
     @staticmethod
     def triangleArea(point1, point2, point3):
         ''' Retrieves the area of a triangle from 3 instances of the class
-        Point '''
+        numpy array '''
         Triangle.checkCorrectType(point1, point2, point3)
-        area = (point1.x * (point2.y - point3.y) +
-                point2.x * (point3.y - point1.y) +
-                point3.x * (point1.y - point2.y))
+        area = (point1[0] * (point2[1] - point3[1]) +
+                point2[0] * (point3[1] - point1[1]) +
+                point3[0] * (point1[1] - point2[1]))
         return area / 2
 
     @staticmethod
     def checkCorrectType(point1, point2, point3):
-        ''' Check if the three points are instances of Point class '''
-        if (not isinstance(point1, Point) or
-                not isinstance(point2, Point) or
-                not isinstance(point3, Point)):
-            ValueError("Points should be an instance of Point")
+        ''' Check if the three points are instances of numpy array '''
+        if (not isinstance(point1, np.ndarray) or
+                not isinstance(point2, np.ndarray) or
+                not isinstance(point3, np.ndarray)):
+            ValueError("Points should be an instance of numpy array")
