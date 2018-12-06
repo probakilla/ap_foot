@@ -1,9 +1,8 @@
+import math
 import pygame
 import numpy
-import math
-from graph.node import Node
-from graph.graph import GraphWithDict
-from graph.graph import GraphWithAdjacencyMatrix
+from graph.graphDict import GraphWithDict
+from graph.graphAdjacency import GraphWithAdjacencyMatrix
 from inputOutput.jsonParser import parseFile
 from inputOutput.problem import Problem
 from algo.geometry import segmentCircleIntersection

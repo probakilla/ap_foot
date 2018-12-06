@@ -1,5 +1,4 @@
 import numpy as np
-from algo.geometry import Point
 from algo.triangle import Triangle
 
 def generateDefenders(problem):

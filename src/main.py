@@ -1,22 +1,22 @@
+''' Entry point of the program '''
+
 import json
 import sys
-import cProfile
 import time
-from algo.buildGraph import buildGraph, ADJACENCY, DICT, DICT_OLD
-from algo.buildGraph import buildGraphWithDict
+from algo.buildGraph import buildGraph, DICT
 from inputOutput.display import Display, DISPLAY_GRAPH, DISPLAY_FIELD
 from inputOutput.problem import Problem
-from algo.algo import minDominatingSetGuillaume, minDominatingSetOkan
-from algo.algo import isDominatingSet, greedyMinDominatingSet
+from algo.algo import greedyMinDominatingSet
 
 
 def main(argv):
+    ''' Entry point of the program '''
     if len(argv) != 2:
         sys.stderr.write("ERROR : NEED A JSON CONFIGURATION FILE!\n")
         sys.exit()
 
-    problem_path = sys.argv[1]
-    with open(problem_path) as problemFile:
+    problemPath = sys.argv[1]
+    with open(problemPath) as problemFile:
         problem = Problem(json.load(problemFile))
 
     startTime = time.time()

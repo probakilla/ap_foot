@@ -1,13 +1,13 @@
 ''' Different algorithms for building graph from a given problem '''
 
 import numpy as np
+from matplotlib.patches import Circle
 from algo.geometry import Point
 from algo.geometry import segmentCircleIntersection
 from algo.geometry import getDistance
-from graph.graph import GraphWithDict
-from graph.graph import GraphWithAdjacencyMatrix
+from graph.graphDict import GraphWithDict
+from graph.graphAdjacency import GraphWithAdjacencyMatrix
 from graph.node import Node
-from matplotlib.patches import Circle
 from algo.generateDefender import generateDefenders, generateDefendersTriangle
 
 ADJACENCY = 1
