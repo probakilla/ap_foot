@@ -1,7 +1,7 @@
 ''' Graph with an adjacency matrix '''
 
 
-class GraphWithAdjacencyMatrix(object):
+class GraphAdjacency(object):
     ''' A representation of a graph with a list of nodes and a two
     dimension list of booleans representing a adjacency matrix '''
 

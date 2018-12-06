@@ -10,7 +10,7 @@ class Goal(object):
         self.direction = direction
 
 
-class GraphWithDict(object):
+class GraphDict(object):
     ''' Representation of a graph with a dictionary '''
 
     def __init__(self, graphDict=None):

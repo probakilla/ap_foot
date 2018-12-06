@@ -1,8 +1,8 @@
 import math
 import pygame
 import numpy
-from graph.graphDict import GraphWithDict
-from graph.graphAdjacency import GraphWithAdjacencyMatrix
+from graph.graphDict import GraphDict
+from graph.graphAdjacency import GraphAdjacency
 from inputOutput.jsonParser import parseFile
 from inputOutput.problem import Problem
 from algo.geometry import segmentCircleIntersection
@@ -58,9 +58,9 @@ class Display(object):
                     (node.pos.x, node.pos.y)), int(self.problem.robot_radius * self.getRatio()))
 
     def getGraphListNode(self):
-        if isinstance(self.graph, GraphWithDict):
+        if isinstance(self.graph, GraphDict):
             return self.graph.graphDict
-        if isinstance(self.graph, GraphWithAdjacencyMatrix):
+        if isinstance(self.graph, GraphAdjacency):
             return self.graph.getListNode()
 
     def drawDominants(self, screen):

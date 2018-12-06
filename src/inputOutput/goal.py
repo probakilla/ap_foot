@@ -23,8 +23,8 @@ class Goal(object):
 
     def kickResult(self, pos, theta):
         # Checking that ball is not coming from behind the goal
-        kick_dir = numpy.array([math.cos(theta), math.sin(theta)])
-        if kick_dir.dot(self.direction) <= 0:
+        kickDir = numpy.array([math.cos(theta), math.sin(theta)])
+        if kickDir.dot(self.direction) <= 0:
             return None
         return segmentLineIntersection(self.posts[:, 0], self.posts[:, 1],
-                                       pos, pos + kick_dir)
+                                       pos, pos + kickDir)
