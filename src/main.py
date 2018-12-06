@@ -24,14 +24,15 @@ def main(argv):
     print("Taille du graphe : ", len(graph.graphDict))
     print("--- Build graph with dict V1 in %s seconds ---" %
           (time.time() - startTime))
-    # startTime = time.time()
-    # dominatingSet = minDominatingSetGuillaume(graph, 10)
-    # print("--- Find dominating set in %s seconds ---" %
-    #       (time.time() - startTime))
-    # print("il faut", len(dominatingSet), "défenseurs")
 
-    display = Display(graph, problem)
-    display.run(DISPLAY_GRAPH, True)
+    startTime = time.time()
+    dominatingSet = greedyMinDominatingSet(graph, 10)
+    print("--- Find dominating set in %s seconds ---" %
+          (time.time() - startTime))
+    print("il faut", len(dominatingSet), "défenseurs")
+
+    display = Display(graph, problem, dominatingSet)
+    display.run(DISPLAY_FIELD, True)
     return True
 
 

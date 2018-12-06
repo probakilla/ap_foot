@@ -30,7 +30,7 @@ def minDominatingSetGuillaume(graph, k):
 
 def greedyMinDominatingSet(graph, k):
     dominatingSet = set()
-    graphCpy = copy.deepcopy(graph)
+    graphCpy = graph.copy()
     for _ in range(k + 1):
         if (len(graphCpy.getDefenders()) == 0):
             return None
