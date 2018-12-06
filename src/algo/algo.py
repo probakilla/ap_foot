@@ -41,18 +41,6 @@ def greedyMinDominatingSet(graph, k):
         if isDominatingSet(graph, dominatingSet):
             return dominatingSet
     return None
-        # Piste de solution sans deepcopy
-    #     dominatingSet = set()
-    # markedNodeSet = set()
-    # for _ in range(k + 1):
-    #     nodeMaxDegree = graph.getDefenderMaxDegree(markedNodeSet)
-    #     dominatingSet.add(nodeMaxDegree)
-    #     markedNodeSet.add(nodeMaxDegree)
-    #     for neighbourNode in graph.getNeighbourhood(nodeMaxDegree):
-    #         markedNodeSet.add(neighbourNode)
-    #     if isDominatingSet(graph, dominatingSet):
-    #         return dominatingSet
-    # return dominatingSet
 
 def minDominatingSetOkan(graph, k):
     attacks = graph.getAttacks()
