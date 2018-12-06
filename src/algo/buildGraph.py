@@ -57,4 +57,50 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
                     graph.addNode(defNode)
                     for interceptedShoot in listInterceptedShoot:
                         graph.addEdge(interceptedShoot["atk"], defNode)
+    addColision(graph, problem.robot_radius * 2)
     return graph
+<<<<<<< HEAD
+=======
+
+
+def buildGraphWithDict(problem):
+    nodes = generateDefendersTriangle(problem)
+    graph = GraphWithDict()
+
+    for i in range(problem.getNbOpponents()):
+        ofender = problem.getOpponent(i)
+
+        for goal in problem.goals:
+            shootings = []
+            for t in np.arange(0.0, 2 * np.pi, problem.theta_step):
+                goalIntersection = goal.kickResult(ofender, t)
+                if goalIntersection is not None:
+                    atkNode = Node(Point(ofender[0], ofender[1]), t)
+                    shootings.append(
+                        {"atk": atkNode, "intersect": goalIntersection})
+
+            for shooting in shootings:
+                graph.addNode(shooting["atk"])
+                for node in nodes:
+                    if getDistance(node, shooting["intersect"]) < getDistance(ofender, shooting["intersect"]):
+                        shootIntersection = segmentCircleIntersection(
+                            Point(ofender[0], ofender[1]), shooting["intersect"], node, problem.robot_radius)
+                        if shootIntersection is not None:
+                            defNode = Node(Point(node[0], node[1]))
+                            graph.addNode(defNode)
+                            graph.addEdge(defNode, shooting["atk"])
+
+    return graph
+
+
+def addColision(graph, minDistance):
+    defenderList = graph.getDefendersList()
+    nbDefenders = len(defenderList)
+    enumDefender = enumerate(defenderList)
+    for i, firstNode in enumDefender:
+        for indexSecondNode in range(i, nbDefenders):
+            secondNode = defenderList[indexSecondNode]
+            if firstNode != secondNode and getDistance(firstNode.getPos(), secondNode.getPos()) <= minDistance:
+                print("colide")
+                graph.addEdge(firstNode, secondNode)
+>>>>>>> e0e648cc15095eb45afa60749a4d8c5af0e14736
