@@ -4,7 +4,7 @@ import numpy as np
 from algo.geometry import Point
 from algo.geometry import segmentCircleIntersection
 from algo.geometry import getDistance
-from algo.geometry import moveInLine
+from algo.triangle import Triangle
 from graph.graph import GraphWithDict
 from graph.graph import GraphWithAdjacencyMatrix
 from graph.node import Node
@@ -60,10 +60,36 @@ def generateDefenders(problem):
             nodes.append([i, j])
     return nodes
 
+def generateDefendersTriangle(problem):
+    nodes = list()
+    triangleList = list()
+    for i in range(problem.getNbOpponents()):
+        ofender = problem.getOpponent(i)
+        opponentPos = Point(ofender[0], ofender[1])
+        for goal in problem.goals:
+            post1 = Point(goal.posts[:, 0][0], goal.posts[:, 0][1] - 1)
+            post2 = Point(goal.posts[:, 1][0], goal.posts[:, 1][1] + 1)
+            triangleList.append(Triangle(opponentPos, post1, post2))
+
+    maxOrdinate = problem.field_limits[1][1]
+    minOrdinate = problem.field_limits[1][0]
+    abscissa = problem.field_limits[0][1]
+    minAbscissa = min(problem.opponents[0])
+    point = Point(abscissa, maxOrdinate)
+    while point.x > minAbscissa:
+        point.y = maxOrdinate
+        while point.y > minOrdinate:
+            for triangle in triangleList:
+                if triangle.isInTriangle(point):
+                    nodes.append(Point(point.x, point.y))
+                    break
+            point.y -= problem.pos_step
+
+        point.x -= problem.pos_step
+    return nodes
 
 def buildGraphWithDict(problem):
     nodes = generateDefenders(problem)
-
     graph = GraphWithDict()
 
     for i in range(problem.getNbOpponents()):
@@ -92,55 +118,36 @@ def buildGraphWithDict(problem):
     return graph
 
 
-def buildGraphTriangle(problem):
-    ''' An optimized version of build graph, generate only needed defenders.
-    The defenders generated are in a triangle shape formation where the three
-    points of the triangle are : an ofender and the two posts of the goal
-    WORK IN PROGRESS '''
-    nodes = generateTriangleDefenders(problem)
-    graph = GraphWithDict()
-    graph.addListNode(nodes)
+def buildGraphTriangles(problem):
+    ''' Build an instance of GraphWithDict, this function may not work if the
+    goal isn't vertically placed on the field. This algorithm draws 3 triangles
+    from the goals posts and each oponent position, and make a 'grid' of
+    defenders in each triangle '''
 
+    graph = GraphWithDict()
+    # Building a list of triangles
+    nodes = list()
     for i in range(problem.getNbOpponents()):
         ofender = problem.getOpponent(i)
 
-        shootings = []
-        for g in problem.goals:
+        for goal in problem.goals:
+            shootings = []
             for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):
-                goalIntersection = g.kickResult(ofender, theta)
+                goalIntersection = goal.kickResult(ofender, theta)
                 if goalIntersection is not None:
                     atkNode = Node(Point(ofender[0], ofender[1]), theta)
                     shootings.append(
                         {"atk": atkNode, "intersect": goalIntersection})
 
-
+            for shooting in shootings:
+                graph.addNode(shooting["atk"])
+                for node in nodes:
+                    if (getDistance((node.x, node.y), shooting["intersect"]) <
+                        getDistance(ofender, shooting["intersect"])):
+                        shootIntersection = segmentCircleIntersection(
+                            ofender, shooting["intersect"], np.array((node.x, node.y)), problem.robot_radius)
+                        if shootIntersection is not None:
+                            defNode = Node(Point(node.x, node.y))
+                            graph.addNode(defNode)
+                            graph.addEdge(shooting["atk"], defNode)
     return graph
-
-
-def generateTriangleDefenders(problem):
-    ''' Generate a triangle shaped set of defenders between goal and each
-    ofender '''
-    nodes = []
-    for opponentIndex in range(problem.getNbOpponents()):
-        ofender = problem.getOpponent(opponentIndex)
-        ofenderPos = Point(ofender[0], ofender[1])
-        for goal in problem.goals:
-            firstPost = Point.fromNumpy(goal.posts[:, 0])
-            secondPost = Point.fromNumpy(goal.posts[:, 1])
-            distFromOpp = getDistance((ofenderPos.x, ofenderPos.y), firstPost)
-            while distFromOpp > problem.pos_step:
-                movingPoint = secondPost
-                distBetweenPosts = getDistance(firstPost, movingPoint)
-                while distBetweenPosts > problem.pos_step:
-                    nodes.append(Node(movingPoint))
-                    movingPoint = moveInLine(
-                        problem.pos_step, movingPoint, firstPost)
-                    distBetweenPosts = getDistance(
-                        (firstPost.x, firstPost.y), (movingPoint.x, movingPoint.y))
-
-                firstPost = moveInLine(problem.pos_step, firstPost, ofenderPos)
-                secondPost = moveInLine(
-                    problem.pos_step, secondPost, ofenderPos)
-                distFromOpp = getDistance(
-                    (ofenderPos.x, ofenderPos.y), (firstPost.x, firstPost.y))
-    return nodes

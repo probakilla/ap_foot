@@ -3,10 +3,11 @@ import sys
 import cProfile
 import time
 from algo.buildGraph import buildGraph, ADJACENCY, DICT, DICT_OLD
-from algo.buildGraph import buildGraphTriangle
+from algo.buildGraph import buildGraphTriangles
 from inputOutput.display import Display, DISPLAY_GRAPH, DISPLAY_FIELD
 from inputOutput.problem import Problem
-from algo.algo import minDominatingSetGuillaume, minDominatingSetOkan, isDominatingSet
+from algo.algo import minDominatingSetGuillaume, minDominatingSetOkan
+from algo.algo import isDominatingSet, buildGraphWithDict
 
 
 def main(argv):
@@ -19,7 +20,7 @@ def main(argv):
         problem = Problem(json.load(problemFile))
 
     startTime = time.time()
-    graph = buildGraphTriangle(problem)
+    graph = buildGraphWithDict(problem)
     print("Taille du graphe : ", len(graph.graphDict))
     print("--- Build graph with dict V1 in %s seconds ---" %
           (time.time() - startTime))
@@ -29,11 +30,9 @@ def main(argv):
     print("--- Find dominating set in %s seconds ---" %
           (time.time() - startTime))
     print("il faut", len(dominatingSet), "défenseurs")
+
     display = Display(graph, problem)
-
-    # DISPLAY_FIELD OR DISPLAY_GRAPH
     display.run(DISPLAY_FIELD, True)
-
     return True
 
 
