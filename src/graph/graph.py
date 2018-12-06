@@ -42,6 +42,8 @@ class GraphWithDict(object):
         ''' Add a node in the dictionary member '''
         if node not in self.graphDict:
             self.graphDict[node] = []
+        else:
+            print("node already in graph")
 
     def removeNode(self, node):
         listNeighbourNode = self.graphDict[node].copy()
@@ -120,7 +122,10 @@ class GraphWithDict(object):
         return listEdges
 
     def copy(self):
-        return GraphWithDict(self.graphDict.copy())
+        graphDict = self.graphDict.copy()
+        for key in graphDict:
+            graphDict[key] = graphDict[key][:]
+        return GraphWithDict(graphDict)
 
 
 class GraphWithAdjacencyMatrix(object):
