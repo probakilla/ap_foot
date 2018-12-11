@@ -47,15 +47,16 @@ class Display(object):
 
     def drawNodes(self, screen):
         listNodes = self.getGraphListNode()
-        for node in listNodes:
-            if node.isAtk():
-                pygame.draw.circle(screen, self.atkColor,
-                                   self.getPixelFromField(
-                                       (node.pos.x, node.pos.y)),
-                                   int(self.problem.robot_radius * self.getRatio()))
-            else:
-                pygame.draw.circle(screen, self.defColor, self.getPixelFromField(
-                    (node.pos.x, node.pos.y)), int(self.problem.robot_radius * self.getRatio()))
+        if listNodes is not None:
+            for node in listNodes:
+                if node.isAtk():
+                    pygame.draw.circle(screen, self.atkColor,
+                                       self.getPixelFromField(
+                                           (node.pos.x, node.pos.y)),
+                                       int(self.problem.robot_radius * self.getRatio()))
+                else:
+                    pygame.draw.circle(screen, self.defColor, self.getPixelFromField(
+                        (node.pos.x, node.pos.y)), int(self.problem.robot_radius * self.getRatio()))
 
     def getGraphListNode(self):
         if isinstance(self.graph, GraphDict):
@@ -149,15 +150,16 @@ class Display(object):
         self.drawKickRays(screen)
 
     def drawGraph(self, screen):
-        if isinstance(self.graph, GraphWithDict):
+        if isinstance(self.graph, GraphDict):
             self.drawDictEdges(screen)
-        if isinstance(self.graph, GraphWithAdjacencyMatrix):
+        if isinstance(self.graph, GraphAdjacency):
             self.drawAdjacencyEdges(screen)
         self.drawNodes(screen)
         self.drawDominants(screen)
         self.drawGoals(screen)
-    # If isField is set to True, draw the field from graph,
-    # otherwise draw the graph (with edges instead of kicks)
+
+    #  If isField is set to True, draw the field from graph,
+    #  otherwise draw the graph (with edges instead of kicks)
 
     def run(self, display_type, collide_type=False):
         pygame.init()

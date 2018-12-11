@@ -8,6 +8,7 @@ def remainsUndominatedAttacker(graph, dominatedNode):
             return True
     return False
 
+
 def isDominatingSet(graph, dominatingSet):
     dominatedNodeList = set()
     for node in dominatingSet:
@@ -19,6 +20,7 @@ def isDominatingSet(graph, dominatingSet):
             return False
     return True
 
+
 def minDominatingSetGuillaume(graph, k):
     listDefender = graph.getDefendersList()
     for nbdefender in range(1, k + 1):
@@ -26,6 +28,7 @@ def minDominatingSetGuillaume(graph, k):
             if isDominatingSet(graph, defenderCombination):
                 return defenderCombination
     return None
+
 
 def greedyMinDominatingSet(graph, k):
     dominatingSet = set()
@@ -40,6 +43,7 @@ def greedyMinDominatingSet(graph, k):
         if isDominatingSet(graph, dominatingSet):
             return dominatingSet
     return None
+
 
 def minDominatingSetOkan(graph, k):
     attacks = graph.getAttacksList()

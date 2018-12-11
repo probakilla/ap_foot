@@ -4,11 +4,13 @@ import numpy as np
 from matplotlib.patches import Circle
 from algo.geometry import Point
 from algo.geometry import segmentCircleIntersection
-from graph.graphDict import GraphWithDict
-from graph.graphAdjacency import GraphWithAdjacencyMatrix
 from graph.node import Node
 from algo.generateDefender import generateDefenders
 from algo.generateDefender import generateDefendersTriangle
+
+from src.algo.geometry import getDistance
+from src.graph.graphAdjacency import GraphAdjacency
+from src.graph.graphDict import GraphDict
 
 ADJACENCY = 1
 DICT = 2
@@ -28,10 +30,11 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
     """
     nodes = generateDefendersTriangle(problem) \
         if defenderBuild == TRIANGLE_DEF else generateDefenders(problem)
-    graph = GraphWithDict() \
-        if buildWith == DICT else GraphWithAdjacencyMatrix()
+    graph = GraphDict() \
+        if buildWith == DICT else GraphAdjacency()
 
-    for ofender in problem.opponents:
+    for ofender_idx in range(problem.getNbOpponents()):
+        ofender = problem.getOpponent(ofender_idx)
         shootings = list()
         for goal in problem.goals:
             for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):
@@ -59,13 +62,11 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
                         graph.addEdge(interceptedShoot["atk"], defNode)
     addColision(graph, problem.robot_radius * 2)
     return graph
-<<<<<<< HEAD
-=======
 
 
 def buildGraphWithDict(problem):
     nodes = generateDefendersTriangle(problem)
-    graph = GraphWithDict()
+    graph = GraphDict()
 
     for i in range(problem.getNbOpponents()):
         ofender = problem.getOpponent(i)
@@ -103,4 +104,3 @@ def addColision(graph, minDistance):
             if firstNode != secondNode and getDistance(firstNode.getPos(), secondNode.getPos()) <= minDistance:
                 print("colide")
                 graph.addEdge(firstNode, secondNode)
->>>>>>> e0e648cc15095eb45afa60749a4d8c5af0e14736

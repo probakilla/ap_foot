@@ -26,5 +26,4 @@ class Goal(object):
         kickDir = numpy.array([math.cos(theta), math.sin(theta)])
         if kickDir.dot(self.direction) <= 0:
             return None
-        return segmentLineIntersection(self.posts[:, 0], self.posts[:, 1],
-                                       pos, pos + kickDir)
+        return segmentLineIntersection(self.posts[:, 0], self.posts[:, 1], pos, pos + kickDir)
