@@ -21,13 +21,25 @@ class GraphAdjacency(object):
             strNode += "]\n"
         return strNode
 
+    def getListNode(self):
+        """
+            Ensure that this graph has same methods than graphDict
+        """
+        return self.listNode
+
     def getAttacksList(self):
+        """
+            Retrieves only the ofenders from the list
+        """
         res = list()
         for i in self.listIndexAtk:
             res.append(self.listNode[i])
         return res
 
     def getDefendersList(self):
+        """
+            Retrieves only the defenders from the list
+        """
         res = list(self.listNode)
         for i in self.listIndexAtk[::-1]:
             del res[i]

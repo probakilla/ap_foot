@@ -3,11 +3,9 @@
 import json
 import sys
 import time
-from algo.buildGraph import buildGraph, DICT, ADJACENCY
-from inputOutput.display import Display, DISPLAY_GRAPH, DISPLAY_FIELD
+from algo.buildGraph import buildGraph, ADJACENCY
+from inputOutput.display import Display, DISPLAY_FIELD
 from inputOutput.problem import Problem
-from algo.algo import greedyMinDominatingSet
-
 
 def main(argv):
     ''' Entry point of the program '''
@@ -24,12 +22,6 @@ def main(argv):
     print("Taille du graphe : ", len(graph.listNode))
     print("--- Build graph with dict V1 in %s seconds ---" %
           (time.time() - startTime))
-
-    # startTime = time.time()
-    # dominatingSet = greedyMinDominatingSet(graph, 10)
-    # print("--- Find dominating set in %s seconds ---" %
-    #       (time.time() - startTime))
-    # print("il faut", len(dominatingSet), "défenseurs")
 
     display = Display(graph, problem)
     display.run(DISPLAY_FIELD, True)

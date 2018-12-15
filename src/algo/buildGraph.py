@@ -8,9 +8,9 @@ from graph.node import Node
 from algo.generateDefender import generateDefenders
 from algo.generateDefender import generateDefendersTriangle
 
-from src.algo.geometry import getDistance
-from src.graph.graphAdjacency import GraphAdjacency
-from src.graph.graphDict import GraphDict
+from algo.geometry import getDistance
+from graph.graphAdjacency import GraphAdjacency
+from graph.graphDict import GraphDict
 
 ADJACENCY = 1
 DICT = 2
@@ -33,8 +33,8 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
     graph = GraphDict() \
         if buildWith == DICT else GraphAdjacency()
 
-    for ofender_idx in range(problem.getNbOpponents()):
-        ofender = problem.getOpponent(ofender_idx)
+    for ofenderIdx in range(problem.getNbOpponents()):
+        ofender = problem.getOpponent(ofenderIdx)
         shootings = list()
         for goal in problem.goals:
             for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):
