@@ -84,18 +84,28 @@ class Display(object):
                 pos2 = (edge.pos.x, edge.pos.y)
                 self.drawSegmentInField(screen, self.edgeColor, pos1, pos2, 1)
 
-    def drawAdjacencyEdges(self, screen):
+    # TODO : Delete this after drawAdjacencyEdges completed
+    def drawAdjacencyEdgesOld(self, screen):
         listNode = self.graph.getListNode()
         for nodeIndex in range(len(listNode)):
             node = listNode[nodeIndex]
             pos1 = (node.pos.x, node.pos.y)
-            adjacencyMatrix = self.graph.getAdjacencyMatrix()
+            adjacencyMatrix = self.graph.adjacencyMatrix
             for edgeIndex in range(len(adjacencyMatrix[nodeIndex])):
                 if adjacencyMatrix[edgeIndex]:
                     edge = listNode[edgeIndex]
                     pos2 = (edge.pos.x, edge.pos.y)
                     self.drawSegmentInField(
                         screen, self.edgeColor, pos1, pos2, 1)
+
+    def drawAdjacencyEdges(self, screen):
+        listNodes = self.graph.getListNode()
+        for node in listNodes:
+            listNeighbours = self.graph.getNeighbourhood(node)
+            for neighbour in listNeighbours:
+                self.drawSegmentInField(
+                    screen, self.edgeColor, (node.pos.x, node.pos.y),
+                    (neighbour.pos.x, neighbour.pos.y), 1)
 
     def drawKickRay(self, screen, robot_pos, kick_dir):
         # Getting closest goal to score

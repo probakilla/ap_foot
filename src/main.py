@@ -4,7 +4,7 @@ import json
 import sys
 import time
 from algo.buildGraph import buildGraph, ADJACENCY
-from inputOutput.display import Display, DISPLAY_FIELD
+from inputOutput.display import Display, DISPLAY_FIELD, DISPLAY_GRAPH
 from inputOutput.problem import Problem
 
 def main(argv):
@@ -24,7 +24,7 @@ def main(argv):
           (time.time() - startTime))
 
     display = Display(graph, problem)
-    display.run(DISPLAY_FIELD, True)
+    display.run(DISPLAY_GRAPH, True)
     return True
 
 

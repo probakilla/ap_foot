@@ -1,21 +1,40 @@
+"""
+    Different algorithms to generate defenders
+"""
+
 import numpy as np
 from algo.triangle import Triangle
 
+
 def generateDefenders(problem):
+    """
+        Brute force algorithm to generate defenders (on all field).
+    """
     nodes = []
-    for i in np.arange((problem.getFieldCenter()[0] - problem.getFieldWidth() / 2), problem.getFieldWidth(), problem.pos_step):
-        for j in np.arange((problem.getFieldCenter()[1] - problem.getFieldHeight() / 2), problem.getFieldHeight(), problem.pos_step):
+    for i in np.arange((problem.getFieldCenter()[0] -
+                        problem.getFieldWidth() / 2),
+                       problem.getFieldWidth(), problem.pos_step):
+        for j in np.arange((problem.getFieldCenter()[1] -
+                            problem.getFieldHeight() / 2),
+                           problem.getFieldHeight(), problem.pos_step):
             nodes.append([i, j])
     return nodes
 
+
 def generateDefendersTriangle(problem):
+    """
+        Generate only defenders in front of the oponents in a triangle shape
+        :param problem: An instance of the problem
+    """
     nodes = list()
     triangleList = list()
     for i in range(problem.getNbOpponents()):
         ofender = problem.getOpponent(i)
         for goal in problem.goals:
-            post1 = np.array([goal.posts[:, 0][0], goal.posts[:, 0][1] - 1])
-            post2 = np.array([goal.posts[:, 1][0], goal.posts[:, 1][1] + 1])
+            post1 = np.array([goal.posts[:, 0][0],
+                              goal.posts[:, 0][1] - problem.pos_step])
+            post2 = np.array([goal.posts[:, 1][0],
+                              goal.posts[:, 1][1] + problem.pos_step])
             triangleList.append(Triangle(ofender, post1, post2))
 
     maxOrdinate = problem.field_limits[1][1]

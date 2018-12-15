@@ -40,18 +40,23 @@ class GraphAdjacency(object):
         """
             Retrieves only the defenders from the list
         """
+        self.listIndexAtk.sort(reverse=True)
         res = list(self.listNode)
-        for i in self.listIndexAtk[::-1]:
-            del res[i]
+        for i in self.listIndexAtk:
+            res.pop(i-1)
         return res
 
     # Bien trop lent
     def getNeighbourhood(self, node):
+        """
+            Retrieves the index of the neighbours of the node
+            :param node: Which node to get neighbours
+        """
         listNeighbourNode = list()
         indexNode = self.listNode.index(node)
-        for indexNeighbourNode in self.adjacencyMatrix[indexNode]:
-            if self.adjacencyMatrix[indexNode][indexNeighbourNode]:
-                listNeighbourNode.append(self.listNode[indexNeighbourNode])
+        for indexNeighbour in range(len(self.listNode)):
+            if self.adjacencyMatrix[indexNode][indexNeighbour]:
+                listNeighbourNode.append(self.listNode[indexNeighbour])
         return listNeighbourNode
 
     def addNode(self, node):
