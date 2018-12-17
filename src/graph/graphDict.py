@@ -43,8 +43,7 @@ class GraphDict(object):
         if node not in self.graphDict:
             self.graphDict[node] = []
         else:
-            print("node already in graph")
-            print(node)
+            print ("{!r} already in graph".format(node))
 
     def removeNode(self, node):
         listNeighbourNode = self.graphDict[node].copy()
