@@ -21,6 +21,10 @@ class GraphAdjacency(object):
             strNode += "]\n"
         return strNode
 
+    def size(self):
+        ''' Retrieve the numbre of node in the graph '''
+        return len(self.listNode)
+
     def getListNode(self):
         """
             Ensure that this graph has same methods than graphDict
@@ -62,7 +66,7 @@ class GraphAdjacency(object):
     def addNode(self, node):
         ''' Append a node in the list '''
         if node in self.listNode:
-            print ("{!r} already in graph".format(node))
+
             return
         self.listNode.append(node)
         for i in self.adjacencyMatrix:
