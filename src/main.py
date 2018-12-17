@@ -75,7 +75,7 @@ def main(filePath, displayType, graphType):
 
     startTime = time.time()
     graph = buildGraph(problem, graphType)
-    print("Taille du graphe : ", len(graph.listNode))
+    print("Taille du graphe : ", graph.size())
     print("--- Build graph with dict V1 in %s seconds ---" %
           (time.time() - startTime))
 
@@ -112,7 +112,6 @@ if __name__ == "__main__":
         else:
             assert False, "Unhandled option!"
 
-    print(fileArg, displayArg, graphArg)
     if fileArg is None:
         print("ERROR: Need a file!")
         usage()
