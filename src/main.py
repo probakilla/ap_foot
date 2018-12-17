@@ -9,7 +9,7 @@ from algo.buildGraph import buildGraph, ADJACENCY, DICT
 from inputOutput.display import Display, DISPLAY_FIELD, DISPLAY_GRAPH
 from inputOutput.problem import Problem
 
-DISPLAY_MODES = ["FIELD", "GRAPH"]
+DISPLAY_MODES = ["FIELD", "GRAPH", None]
 GRAPH_TYPES = ["ADJ", "DICT"]
 
 
@@ -40,7 +40,7 @@ def displayArgParse(displayArgument):
         print("ERROR: Wrong display type value!")
         usage()
         sys.exit(3)
-    res = -1
+    res = displayArgument
     if displayArgument == "FIELD":
         res = DISPLAY_FIELD
     elif displayArgument == "GRAPH":
@@ -79,8 +79,10 @@ def main(filePath, displayType, graphType):
     print("--- Build graph with dict V1 in %s seconds ---" %
           (time.time() - startTime))
 
-    display = Display(graph, problem)
-    display.run(displayType, True)
+    if not displayType == None:
+        display = Display(graph, problem)
+        display.run(displayType, True)
+
     return True
 
 
@@ -116,12 +118,8 @@ if __name__ == "__main__":
         print("ERROR: Need a file!")
         usage()
         sys.exit()
-    if displayArg is None:
-        print("ERROR: Need a display option!")
-        usage()
-        sys.exit()
     if graphArg is None:
-        print("ERROR: Need a graph type!")
+        print("ERROR: Need a graph option!")
         usage()
         sys.exit()
 
