@@ -33,6 +33,10 @@ class GraphDict(object):
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
+    def size(self):
+        ''' Retrieve the numbre of node in the graph '''
+        return len(self.graphDict)
+
     def addListNode(self, listNode):
         ''' Add a list of nodes in the graph '''
         for node in listNode:
@@ -43,8 +47,7 @@ class GraphDict(object):
         if node not in self.graphDict:
             self.graphDict[node] = []
         else:
-            print("node already in graph")
-            print(node)
+            print ("{!r} already in graph".format(node))
 
     def removeNode(self, node):
         listNeighbourNode = self.graphDict[node].copy()
@@ -126,4 +129,4 @@ class GraphDict(object):
         graphDict = self.graphDict.copy()
         for key in graphDict:
             graphDict[key] = graphDict[key][:]
-        return GraphWithDict(graphDict)
+        return GraphDict(graphDict)
