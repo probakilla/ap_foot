@@ -5,6 +5,7 @@ import sys
 import time
 import getopt
 import os
+import cProfile
 from algo.buildGraph import buildGraph, ADJACENCY, DICT
 from inputOutput.display import Display, DISPLAY_FIELD, DISPLAY_GRAPH
 from inputOutput.problem import Problem
@@ -66,20 +67,28 @@ def graphArgParse(graphArgument):
     return res
 
 
-def main(filePath, displayType, graphType):
+def main(filePath, displayType, graphType, profiling):
     ''' Entry point of the program '''
 
     problemPath = filePath
     with open(problemPath) as problemFile:
         problem = Problem(json.load(problemFile))
 
+    profile = None
+    if profiling:
+        profile = cProfile.Profile()
+        profile.enable()
     startTime = time.time()
     graph = buildGraph(problem, graphType)
+    if profiling:
+        profile.disable()
+        print("Profiling resulsts:")
+        profile.print_stats("time")
     print("Taille du graphe : ", graph.size())
     print("--- Build graph with dict V1 in %s seconds ---" %
           (time.time() - startTime))
 
-    if not displayType == None:
+    if not displayType is None:
         display = Display(graph, problem)
         display.run(displayType, True)
 
@@ -91,9 +100,11 @@ if __name__ == "__main__":
     fileArg = None
     displayArg = None
     graphArg = None
+    profilingArg = False
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "d:f:g:h",
-                                   ["display=", "file=", "graph=", "help"])
+        opts, args = getopt.getopt(sys.argv[1:], "d:f:g:hp",
+                                   ["display=", "file=", "graph=",
+                                    "help", "profile"])
     except getopt.GetoptError as err:
         print(err)
         usage()
@@ -111,6 +122,8 @@ if __name__ == "__main__":
         elif opt in ("-h", "--help"):
             usage()
             sys.exit()
+        elif opt in ("-p", "--profile"):
+            profilingArg = True
         else:
             assert False, "Unhandled option!"
 
@@ -123,4 +136,4 @@ if __name__ == "__main__":
         usage()
         sys.exit()
 
-    main(fileArg, displayArg, graphArg)
+    main(fileArg, displayArg, graphArg, profilingArg)
