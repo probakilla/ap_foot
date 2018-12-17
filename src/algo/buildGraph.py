@@ -10,11 +10,11 @@ from graph.node import Node
 from graph.graphAdjacency import GraphAdjacency
 from graph.graphDict import GraphDict
 
-ADJACENCY = 1
-DICT = 2
+ADJACENCY = 0
+DICT = 1
 
-TRIANGLE_DEF = 1
-CLASSIC_DEF = 2
+TRIANGLE_DEF = 0
+CLASSIC_DEF = 1
 
 
 def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
