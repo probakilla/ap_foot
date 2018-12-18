@@ -126,7 +126,7 @@ class Display(object):
             for defNode in self.dominantList:
                 if defNode.isAtk():
                     continue
-                collide_point = segmentCircleIntersection(robot_pos, kick_end, defNode, self.problem.robot_radius)
+                collide_point = segmentCircleIntersection(robot_pos, kick_end, defNode.pos, self.problem.robot_radius)
                 if not collide_point is None:
                     if self.collide:
                         kick_end = collide_point
