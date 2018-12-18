@@ -2,23 +2,6 @@ import math
 import numpy as np
 
 
-def line(p1, p2):
-    A = (p1.y - p2.y)
-    B = (p2.x - p1.x)
-    C = (p1.x * p2.y - p2.x * p1.y)
-    return A, B, -C
-
-
-def calculateEquation(p1, p2):
-    cd = (p2.y - p1.y) / (p2.x - p1.x)
-    k = p1.y - (cd * p1.x)
-    return {cd, k}
-
-
-def getDistancePts(p1, p2):
-    return getDistance([p1.x, p1.y], [p2.x, p2.y])
-
-
 def getDistance(p1, p2):
     return math.hypot(p2[0] - p1[0], p2[1] - p1[1])
 
