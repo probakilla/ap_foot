@@ -36,7 +36,7 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
             for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):
                 goalIntersection = goal.kickResult(ofender, theta)
                 if goalIntersection is not None:
-                    atkNode = Node(nodeIdx, Point(ofender[0], ofender[1]), theta)
+                    atkNode = Node(nodeIdx, ofender, theta)
                     nodeIdx += 1
                     graph.addNode(atkNode)
                     shootings.append(
@@ -50,7 +50,7 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
                         ofender, shoot["intersect"],
                         defender, problem.robot_radius)
                     if shootInterception is not None:
-                        listInterceptedShoot.append((shoot["atk"], Node(nodeIdx, Point(defender[0], defender[1]))))
+                        listInterceptedShoot.append((shoot["atk"], Node(nodeIdx, defender)))
                         nodeIdx += 1
         if listInterceptedShoot:
             for interceptedShoot in listInterceptedShoot:
@@ -68,5 +68,5 @@ def addColision(graph, minDistance):
     for i, firstNode in enumDefender:
         for indexSecondNode in range(i, nbDefenders):
             secondNode = defenderList[indexSecondNode]
-            if getDistance(firstNode.getPos(), secondNode.getPos()) <= minDistance:
+            if getDistance(firstNode.pos, secondNode.pos) <= minDistance:
                 graph.addEdge(firstNode, secondNode)

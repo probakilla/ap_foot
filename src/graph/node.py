@@ -19,15 +19,15 @@ class Node(object):
 
     def __key(self):
         ''' Key used to differentiate it from another '''
-        return self.pos, self.angle
+        return self.pos[0], self.pos[1], self.angle
 
     def __eq__(self, node):
         # Both defenders
         if self.isDef() and node.isDef():
-            return self.pos == node.pos
+            return self.pos[0] == node.pos[0] and self.pos[1] == node.pos[1]
         # Both attacker
         elif self.isAtk() and node.isAtk():
-            return self.angle - node.angle < self.EPSILON and self.pos == node.pos
+            return self.angle - node.angle < self.EPSILON and self.pos[0] == node.pos[0] and self.pos[1] == node.pos[1]
         return False
 
     def __hash__(self):
