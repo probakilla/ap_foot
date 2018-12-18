@@ -1,7 +1,5 @@
 ''' This file helps to manage a triangle in the field '''
 import numpy as np
-from algo.geometry import Point
-
 
 class Triangle(object):
     EPSILON = 0.001
@@ -21,8 +19,7 @@ class Triangle(object):
     def isInTriangle(self, toCheckPoint):
         ''' Retrieves true if toCheckPoint lies in this triangle, toCheckPoint
         should be an instance of Point '''
-        if not isinstance(toCheckPoint, Point):
-            ValueError("The point given should be an instance of Point")
+
         area1 = Triangle.triangleArea(toCheckPoint, self.point1, self.point2)
         area2 = Triangle.triangleArea(toCheckPoint, self.point2, self.point3)
         area3 = Triangle.triangleArea(toCheckPoint, self.point1, self.point3)

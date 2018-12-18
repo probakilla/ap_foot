@@ -52,11 +52,11 @@ class Display(object):
                 if node.isAtk():
                     pygame.draw.circle(screen, self.atkColor,
                                        self.getPixelFromField(
-                                           (node.pos.x, node.pos.y)),
+                                           (node.pos[0], node.pos[1])),
                                        int(self.problem.robot_radius * self.getRatio()))
                 else:
                     pygame.draw.circle(screen, self.defColor, self.getPixelFromField(
-                        (node.pos.x, node.pos.y)), int(self.problem.robot_radius * self.getRatio()))
+                        (node.pos[0], node.pos[1])), int(self.problem.robot_radius * self.getRatio()))
 
     def getGraphListNode(self):
         if isinstance(self.graph, GraphDict):
@@ -69,7 +69,7 @@ class Display(object):
             for node in self.dominantList:
                 pygame.draw.circle(screen, self.domColor,
                                    self.getPixelFromField(
-                                       (node.pos.x, node.pos.y)),
+                                       (node.pos[0], node.pos[1])),
                                    int(self.problem.robot_radius * self.getRatio()))
 
     def drawSegmentInField(self, screen, color, pos1, pos2, thickness):
@@ -79,9 +79,9 @@ class Display(object):
 
     def drawDictEdges(self, screen):
         for node in self.graph.graphDict:
-            pos1 = (node.pos.x, node.pos.y)
+            pos1 = (node.pos[0], node.pos[1])
             for edge in self.graph.graphDict[node]:
-                pos2 = (edge.pos.x, edge.pos.y)
+                pos2 = (edge.pos[0], edge.pos[1])
                 self.drawSegmentInField(screen, self.edgeColor, pos1, pos2, 1)
 
     # TODO : Delete this after drawAdjacencyEdges completed
@@ -89,12 +89,12 @@ class Display(object):
         listNode = self.graph.getListNode()
         for nodeIndex in range(len(listNode)):
             node = listNode[nodeIndex]
-            pos1 = (node.pos.x, node.pos.y)
+            pos1 = (node.pos[0], node.pos[1])
             adjacencyMatrix = self.graph.adjacencyMatrix
             for edgeIndex in range(len(adjacencyMatrix[nodeIndex])):
                 if adjacencyMatrix[edgeIndex]:
                     edge = listNode[edgeIndex]
-                    pos2 = (edge.pos.x, edge.pos.y)
+                    pos2 = (edge.pos[0], edge.pos[1])
                     self.drawSegmentInField(
                         screen, self.edgeColor, pos1, pos2, 1)
 
@@ -104,8 +104,8 @@ class Display(object):
             listNeighbours = self.graph.getNeighbourhood(node)
             for neighbour in listNeighbours:
                 self.drawSegmentInField(
-                    screen, self.edgeColor, (node.pos.x, node.pos.y),
-                    (neighbour.pos.x, neighbour.pos.y), 1)
+                    screen, self.edgeColor, (node.pos[0], node.pos[1]),
+                    (neighbour.pos[0], neighbour.pos[1]), 1)
 
     def drawKickRay(self, screen, robot_pos, kick_dir):
         # Getting closest goal to score
