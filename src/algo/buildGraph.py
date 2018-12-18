@@ -67,5 +67,5 @@ def addColision(graph, minDistance):
     for i, firstNode in enumDefender:
         for indexSecondNode in range(i, nbDefenders):
             secondNode = defenderList[indexSecondNode]
-            if firstNode != secondNode and getDistance(firstNode.pos, secondNode.pos) <= minDistance:
+            if firstNode.id != secondNode.id and getDistance(firstNode.pos, secondNode.pos) <= minDistance:
                 graph.addEdge(firstNode, secondNode)
