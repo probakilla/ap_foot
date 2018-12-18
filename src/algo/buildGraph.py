@@ -1,6 +1,5 @@
 ''' Different algorithms for building graph from a given problem '''
 import numpy as np
-from algo.geometry import Point
 from algo.geometry import segmentCircleIntersection
 from algo.generateDefender import generateDefenders, generateDefendersTriangle
 from algo.geometry import getDistance
