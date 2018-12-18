@@ -101,7 +101,10 @@ def main(filePath, displayType, graphType, profiling):
           (time.time() - startTime))
 
     if not displayType is None:
-        display = Display(graph, problem, domSet)
+        if domSet is None:
+            display = Display(graph, problem)
+        else:
+            display = Display(graph, problem, domSet)
         display.run(displayType, True)
 
     return True

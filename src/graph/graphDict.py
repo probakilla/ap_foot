@@ -1,6 +1,5 @@
 ''' Graph management module '''
 
-
 class Goal(object):
     ''' Representation of a goal in field '''
 
@@ -17,7 +16,6 @@ class GraphDict(object):
         if graphDict is None:
             graphDict = {}
         self.graphDict = graphDict
-        self.ids = {}
 
     def __str__(self):
         res = ""
@@ -45,24 +43,10 @@ class GraphDict(object):
 
     def addNode(self, node):
         ''' Add a node in the dictionary member '''
-        if node.id not in self.ids:
+        if node not in self.graphDict:
             self.graphDict[node] = []
-            self.ids[node.id] = []
         else:
             print ("{!r} already in graph".format(node))
-
-    def removeNode(self, node):
-        listNeighbourNode = self.graphDict[node].copy()
-        for neighbourNode in listNeighbourNode:
-            self.graphDict[node].remove(neighbourNode)
-            self.graphDict[neighbourNode].remove(node)
-        del self.graphDict[node]
-
-    def removeNodeAndNeighbourhood(self, node):
-        listNeighbourNode = self.graphDict[node].copy()
-        for neighbourNode in listNeighbourNode:
-            self.removeNode(neighbourNode)
-        del self.graphDict[node]
 
     def addEdge(self, node1, node2):
         ''' Add an edge between the two nodes '''
@@ -71,14 +55,13 @@ class GraphDict(object):
 
     def addEdgeBetweenNodes(self, node1, node2):
         ''' Add a node in the neighbourg list of a node '''
-        if node1.id in self.ids:
-            if node2.id not in self.ids[node1.id]:
+        if node1 in self.graphDict:
+            if node2 not in self.graphDict[node1]:
                 self.graphDict[node1].append(node2)
-                self.ids[node1.id].append(node2.id)
             else:
                 print("node already in neighbourhood")
         else:
-            print('node not in graph')
+            print('node %s not in graph' % node1)
 
 
     def listNodes(self):
@@ -110,7 +93,10 @@ class GraphDict(object):
         nodeMaxDegree = None
         for node in self.graphDict:
             if not node.isAtk() and node not in markedNodeSet:
-                nodeDegree = len(self.graphDict[node])
+                nodeDegree = 0
+                for neighbourNode in self.getNeighbourhood(node):
+                    if neighbourNode not in markedNodeSet:
+                        nodeDegree += 1
                 if  (nodeDegree > maxDegree):
                     maxDegree = nodeDegree
                     nodeMaxDegree = node
@@ -127,9 +113,3 @@ class GraphDict(object):
             for edge in self.graphDict[node]:
                 listEdges.append((node, edge))
         return listEdges
-
-    def copy(self):
-        graphDict = self.graphDict.copy()
-        for key in graphDict:
-            graphDict[key] = graphDict[key][:]
-        return GraphDict(graphDict)

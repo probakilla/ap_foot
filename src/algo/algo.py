@@ -23,7 +23,7 @@ def isDominatingSet(graph, dominatingSet):
 
 def minDominatingSetGuillaume(graph, k):
     listDefender = graph.getDefendersList()
-    for nbdefender in range(1, k + 1):
+    for nbdefender in range(1, k):
         for defenderCombination in itertools.combinations(listDefender, nbdefender):
             if isDominatingSet(graph, defenderCombination):
                 return defenderCombination
@@ -32,14 +32,15 @@ def minDominatingSetGuillaume(graph, k):
 
 def greedyMinDominatingSet(graph, k):
     dominatingSet = set()
-    graphCpy = graph.copy()
-    for _ in range(k + 1):
-        if (len(graphCpy.getDefendersList()) == 0):
+    markedNodes = set()
+    for _ in range(k):
+        if (len(graph.getDefendersList()) == 0):
             return None
-        nodeMaxDegree = graphCpy.getDefenderMaxDegree()
+        nodeMaxDegree = graph.getDefenderMaxDegree(markedNodes)
         dominatingSet.add(nodeMaxDegree)
-        graphCpy.removeNodeAndNeighbourhood(nodeMaxDegree)
-        graph.graphDict[nodeMaxDegree]
+        markedNodes.add(nodeMaxDegree)
+        for neighbourNode in graph.getNeighbourhood(nodeMaxDegree):
+            markedNodes.add(neighbourNode)
         if isDominatingSet(graph, dominatingSet):
             return dominatingSet
     return None
@@ -49,7 +50,7 @@ def minDominatingSetOkan(graph, k):
     attacks = graph.getAttacksList()
     defenders = graph.getDefendersList()
 
-    for nbdefender in range(1, k + 1):
+    for nbdefender in range(1, k):
         for bits in itertools.combinations(range(len(defenders)), nbdefender):
 
             attacks_tmp = attacks.copy()

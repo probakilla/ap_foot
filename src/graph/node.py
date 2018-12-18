@@ -6,10 +6,9 @@ class Node(object):
     Nodes with a None angle are considered as defenders '''
     EPSILON = 0.001
 
-    def __init__(self, id, pos, angle=None):
+    def __init__(self, pos, angle=None):
         self.pos = pos
         self.angle = angle
-        self.id = id
 
     def __str__(self):
         return "Node (pos: %s, angle: %s)" % (self.pos,
