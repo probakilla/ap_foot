@@ -6,19 +6,21 @@ import time
 import getopt
 import os
 import cProfile
+from algo.algo import greedyMinDominatingSet
 from algo.buildGraph import buildGraph, ADJACENCY, DICT
 from inputOutput.display import Display, DISPLAY_FIELD, DISPLAY_GRAPH
 from inputOutput.problem import Problem
 
 DISPLAY_MODES = ["FIELD", "GRAPH", None]
 GRAPH_TYPES = ["ADJ", "DICT"]
+K = 3
 
 
 def usage():
     """
         Display the usage of the program, specifying the arguments
     """
-    print("USAGE: python main.py -f <CONFIG_FILE> -d <DISPLAY_TYPE> -g <GRAPH_TYPE>")
+    print("USAGE: python main.py -f <CONFIG_FILE> -d <DISPLAY_TYPE> -g <GRAPH_TYPE> -k <NB_DEF>")
     print("Note: Options are not case sensitive.")
     print("-d, --display=DISPLAY_TYPE")
     print("  The display type of the graph, DISPLAY_TYPE possible values"
@@ -27,6 +29,8 @@ def usage():
     print("  The path to the configuration file (json format).")
     print("-g, --graph=GRAPH_TYPE")
     print("  The type of the graph, possible values are: ", GRAPH_TYPES)
+    print("-k")
+    print("  The maximum number of defender for the dominating. Value need to be an integer. By default, k=3")
     print("-h, --help")
     print("  Display the help for this program.")
 
@@ -51,7 +55,7 @@ def displayArgParse(displayArgument):
 
 def graphArgParse(graphArgument):
     """
-        Tranforms the argument string into a vakue for the graph building
+        Tranforms the argument string into a value for the graph building
         function. Also checks if the argument is a valid value.
         :param graphArgument: The argument to transform
     """
@@ -65,7 +69,6 @@ def graphArgParse(graphArgument):
     elif graphArgument == "DICT":
         res = DICT
     return res
-
 
 def main(filePath, displayType, graphType, profiling):
     ''' Entry point of the program '''
@@ -82,14 +85,23 @@ def main(filePath, displayType, graphType, profiling):
     graph = buildGraph(problem, graphType)
     if profiling:
         profile.disable()
-        print("Profiling resulsts:")
+        print("Profiling results:")
         profile.print_stats("time")
     print("Taille du graphe : ", graph.size())
-    print("--- Build graph with dict V1 in %s seconds ---" %
+    print("--- Build graph in %s seconds ---" %
+          (time.time() - startTime))
+
+    startTime = time.time()
+    domSet = greedyMinDominatingSet(graph, K)
+    if domSet is None:
+        print("Can't find position for %s defenders" % K)
+    else:
+        print("Need %s defender " % len(domSet))
+    print("--- Min dominating set found in %s seconds ---" %
           (time.time() - startTime))
 
     if not displayType is None:
-        display = Display(graph, problem)
+        display = Display(graph, problem, domSet)
         display.run(displayType, True)
 
     return True
@@ -102,7 +114,7 @@ if __name__ == "__main__":
     graphArg = None
     profilingArg = False
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "d:f:g:hp",
+        opts, args = getopt.getopt(sys.argv[1:], "d:f:g:hpk:",
                                    ["display=", "file=", "graph=",
                                     "help", "profile"])
     except getopt.GetoptError as err:
@@ -124,6 +136,13 @@ if __name__ == "__main__":
             sys.exit()
         elif opt in ("-p", "--profile"):
             profilingArg = True
+        elif opt in ("-k"):
+            try:
+                K = int(arg)
+            except: 
+                print("ERROR: Wrong k type value!")
+                usage()
+                sys.exit(5)
         else:
             assert False, "Unhandled option!"
 
