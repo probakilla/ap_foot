@@ -46,7 +46,7 @@ class GraphDict(object):
         if node not in self.graphDict:
             self.graphDict[node] = []
         else:
-            print ("{!r} already in graph".format(node))
+            print ("%s already in graph" % (node))
 
     def addEdge(self, node1, node2):
         ''' Add an edge between the two nodes '''
@@ -61,7 +61,7 @@ class GraphDict(object):
             else:
                 print("node already in neighbourhood")
         else:
-            print('node %s not in graph' % node1)
+            raise ValueError('node %s not in graph' % node1)
 
 
     def listNodes(self):
