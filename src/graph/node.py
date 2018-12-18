@@ -35,7 +35,7 @@ class Node(object):
 
     def getPos(self):
         ''' Getter on position '''
-        return [self.pos.x, self.pos.y]
+        return [self.pos[0], self.pos[1]]
 
     def isAtk(self):
         ''' Retrieves true if the angle is not None '''
