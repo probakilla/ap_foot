@@ -66,7 +66,6 @@ class GraphAdjacency(object):
     def addNode(self, node):
         ''' Append a node in the list '''
         if node in self.listNode:
-
             return
         self.listNode.append(node)
         for i in self.adjacencyMatrix:

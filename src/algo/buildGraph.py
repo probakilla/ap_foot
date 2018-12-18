@@ -69,5 +69,4 @@ def addColision(graph, minDistance):
         for indexSecondNode in range(i, nbDefenders):
             secondNode = defenderList[indexSecondNode]
             if getDistance(firstNode.getPos(), secondNode.getPos()) <= minDistance:
-                print("colide")
                 graph.addEdge(firstNode, secondNode)
