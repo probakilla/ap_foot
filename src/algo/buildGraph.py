@@ -1,4 +1,5 @@
 ''' Different algorithms for building graph from a given problem '''
+import cProfile
 
 import numpy as np
 from matplotlib.patches import Circle
@@ -26,10 +27,10 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
         :param defenderBuild=TRIANGLE_DEF: Tell witch algorithm to use for
             generating the defenders
     """
-    nodes = generateDefendersTriangle(problem) \
-        if defenderBuild == TRIANGLE_DEF else generateDefenders(problem)
-    graph = GraphDict() \
-        if buildWith == DICT else GraphAdjacency()
+    nodes = generateDefendersTriangle(problem) if defenderBuild == TRIANGLE_DEF else generateDefenders(problem)
+    graph = GraphDict() if buildWith == DICT else GraphAdjacency()
+
+    nodeIdx = 0
 
     for ofenderIdx in range(problem.getNbOpponents()):
         ofender = problem.getOpponent(ofenderIdx)
@@ -38,7 +39,8 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
             for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):
                 goalIntersection = goal.kickResult(ofender, theta)
                 if goalIntersection is not None:
-                    atkNode = Node(Point(ofender[0], ofender[1]), theta)
+                    atkNode = Node(nodeIdx, Point(ofender[0], ofender[1]), theta)
+                    nodeIdx += 1
                     graph.addNode(atkNode)
                     shootings.append(
                         {"atk": atkNode, "intersect": goalIntersection})
@@ -52,8 +54,8 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
                         ofender, shoot["intersect"],
                         defender, problem.robot_radius)
                     if shootInterception is not None:
-                        listInterceptedShoot.append(
-                            (shoot["atk"], Node(Point(defender[0], defender[1]))))
+                        listInterceptedShoot.append((shoot["atk"], Node(nodeIdx, Point(defender[0], defender[1]))))
+                        nodeIdx += 1
         if listInterceptedShoot:
             for interceptedShoot in listInterceptedShoot:
                 graph.addNode(interceptedShoot[1])
@@ -70,8 +72,6 @@ def addColision(graph, minDistance):
     for i, firstNode in enumDefender:
         for indexSecondNode in range(i, nbDefenders):
             secondNode = defenderList[indexSecondNode]
-            if (firstNode != secondNode and
-                    getDistance(firstNode.getPos(),
-                                secondNode.getPos()) <= minDistance):
+            if getDistance(firstNode.getPos(), secondNode.getPos()) <= minDistance:
                 print("colide")
                 graph.addEdge(firstNode, secondNode)

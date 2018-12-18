@@ -17,6 +17,7 @@ class GraphDict(object):
         if graphDict is None:
             graphDict = {}
         self.graphDict = graphDict
+        self.ids = {}
 
     def __str__(self):
         res = ""
@@ -44,8 +45,9 @@ class GraphDict(object):
 
     def addNode(self, node):
         ''' Add a node in the dictionary member '''
-        if node not in self.graphDict:
+        if node.id not in self.ids:
             self.graphDict[node] = []
+            self.ids[node.id] = []
         else:
             print ("{!r} already in graph".format(node))
 
@@ -69,9 +71,10 @@ class GraphDict(object):
 
     def addEdgeBetweenNodes(self, node1, node2):
         ''' Add a node in the neighbourg list of a node '''
-        if node1 in self.graphDict:
-            if node2 not in self.graphDict[node1]:
+        if node1.id in self.ids:
+            if node2.id not in self.ids[node1.id]:
                 self.graphDict[node1].append(node2)
+                self.ids[node1.id].append(node2.id)
             else:
                 print("node already in neighbourhood")
         else:
