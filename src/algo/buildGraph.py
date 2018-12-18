@@ -1,8 +1,5 @@
 ''' Different algorithms for building graph from a given problem '''
-import cProfile
-
 import numpy as np
-from matplotlib.patches import Circle
 from algo.geometry import Point
 from algo.geometry import segmentCircleIntersection
 from algo.generateDefender import generateDefenders, generateDefendersTriangle
@@ -45,10 +42,9 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
                     shootings.append(
                         {"atk": atkNode, "intersect": goalIntersection})
 
-        ofenderCircle = Circle(ofender, problem.robot_radius)
         listInterceptedShoot = list()
         for defender in nodes:
-            if not ofenderCircle.contains_point(defender):
+            if getDistance(ofender, defender) > problem.robot_radius:
                 for shoot in shootings:
                     shootInterception = segmentCircleIntersection(
                         ofender, shoot["intersect"],
