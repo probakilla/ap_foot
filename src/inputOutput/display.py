@@ -84,7 +84,7 @@ class Display(object):
                 pos2 = (edge.pos[0], edge.pos[1])
                 self.drawSegmentInField(screen, self.edgeColor, pos1, pos2, 1)
 
-    # TODO : Delete this after drawAdjacencyEdges completed
+    #  TODO : Delete this after drawAdjacencyEdges completed
     def drawAdjacencyEdgesOld(self, screen):
         listNode = self.graph.getListNode()
         for nodeIndex in range(len(listNode)):
@@ -126,9 +126,7 @@ class Display(object):
             for defNode in self.dominantList:
                 if defNode.isAtk():
                     continue
-                defPos = defNode.getPos()
-                collide_point = segmentCircleIntersection(robot_pos, kick_end,
-                                                          defPos, self.problem.robot_radius)
+                collide_point = segmentCircleIntersection(robot_pos, kick_end, defNode.pos, self.problem.robot_radius)
                 if not collide_point is None:
                     if self.collide:
                         kick_end = collide_point
