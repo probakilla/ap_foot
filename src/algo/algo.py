@@ -20,17 +20,12 @@ def isDominatingSet(graph, dominatingSet):
             return False
     return True
 
-
-def minDominatingSetGuillaume(graph, k):
-    listDefender = graph.getDefendersList()
-    for nbdefender in range(1, k+1):
-        for defenderCombination in itertools.combinations(listDefender, nbdefender):
-            if isDominatingSet(graph, defenderCombination):
-                return defenderCombination
-    return None
-
-
 def greedyMinDominatingSet(graph, k):
+    '''
+    Retrieves the minimum dominating set lower than k for graph.
+    Return None if there isn't such dominating set
+    It use a greedy algo.
+    '''
     dominatingSet = set()
     markedNodes = set()
     for _ in range(k):
@@ -46,28 +41,14 @@ def greedyMinDominatingSet(graph, k):
     return None
 
 
-def minDominatingSetOkan(graph, k):
-    attacks = graph.getAttacksList()
-    defenders = graph.getDefendersList()
-
+def bruteForceMinDominatingSet(graph, k):
+    '''
+    Retrieves the minimum dominating set lower than k for graph, by brute force.
+    Return None if there isn't such dominating set
+    '''
+    listDefender = graph.getDefendersList()
     for nbdefender in range(1, k+1):
-        for bits in itertools.combinations(range(len(defenders)), nbdefender):
-
-            attacks_tmp = attacks.copy()
-
-            for defIdx in bits:
-                defender = defenders[defIdx]
-                shotsStopped = graph.graphDict[defender]
-
-                if nbdefender == 1 and len(shotsStopped) == len(attacks):
-                    return {defender}
-                else:
-                    for shot in shotsStopped:
-                        if shot in attacks_tmp:
-                            attacks_tmp.remove(shot)
-
-            if len(attacks_tmp) == 0:
-                dominatingSet = set()
-                for defIdx in bits:
-                    dominatingSet.add(defenders[defIdx])
-                return dominatingSet
+        for defenderCombination in itertools.combinations(listDefender, nbdefender):
+            if isDominatingSet(graph, defenderCombination):
+                return defenderCombination
+    return None
