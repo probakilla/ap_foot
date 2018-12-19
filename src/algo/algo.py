@@ -23,7 +23,7 @@ def isDominatingSet(graph, dominatingSet):
 
 def minDominatingSetGuillaume(graph, k):
     listDefender = graph.getDefendersList()
-    for nbdefender in range(1, k):
+    for nbdefender in range(1, k+1):
         for defenderCombination in itertools.combinations(listDefender, nbdefender):
             if isDominatingSet(graph, defenderCombination):
                 return defenderCombination
@@ -50,7 +50,7 @@ def minDominatingSetOkan(graph, k):
     attacks = graph.getAttacksList()
     defenders = graph.getDefendersList()
 
-    for nbdefender in range(1, k):
+    for nbdefender in range(1, k+1):
         for bits in itertools.combinations(range(len(defenders)), nbdefender):
 
             attacks_tmp = attacks.copy()
