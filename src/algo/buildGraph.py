@@ -25,6 +25,7 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
     """
     nodes = generateDefendersTriangle(problem) if defenderBuild == TRIANGLE_DEF else generateDefenders(problem)
     graph = GraphDict() if buildWith == DICT else GraphAdjacency()
+    minDistance = 2 * problem.robot_radius
 
     for ofenderIdx in range(problem.getNbOpponents()):
         ofender = problem.getOpponent(ofenderIdx)
@@ -40,7 +41,7 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
 
         listInterceptedShoot = list()
         for defender in nodes:
-            if getDistance(ofender, defender) > problem.robot_radius:
+            if getDistance(ofender, defender) > minDistance:
                 for shoot in shootings:
                     shootInterception = segmentCircleIntersection(
                         ofender, shoot["intersect"],
@@ -52,11 +53,16 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
                 graph.addNode(interceptedShoot[1])
                 graph.addEdge(interceptedShoot[0], interceptedShoot[1])
 
-    addColision(graph, problem.robot_radius * 2)
+    # Doesn't work properly. Some possibility without colision are removed
+    #addColision(graph, problem.robot_radius * 2)
     return graph
 
 
 def addColision(graph, minDistance):
+    '''
+    Add an edge between defenders separated by a distance under minDistance in
+    graph.
+    '''
     defenderList = graph.getDefendersList()
     nbDefenders = len(defenderList)
     enumDefender = enumerate(defenderList)
