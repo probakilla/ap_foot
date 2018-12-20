@@ -151,10 +151,11 @@ if __name__ == "__main__":
 
     startTime = time.time()
     domSet = None
+    minDistance = 2*problem.getRobotRadius()
     if ALGO_ARG == "BRUTE":
-        domSet = bruteForceMinDominatingSet(graph, K)
+        domSet = bruteForceMinDominatingSet(graph, K, minDistance)
     elif ALGO_ARG == "GREEDY":
-        domSet = greedyMinDominatingSet(graph, K)
+        domSet = greedyMinDominatingSet(graph, K, minDistance)
 
     if domSet is None:
         print("Can't find position for %s defenders" % K)
