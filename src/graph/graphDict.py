@@ -45,8 +45,6 @@ class GraphDict(object):
         ''' Add a node in the dictionary member '''
         if node not in self.graphDict:
             self.graphDict[node] = []
-        else:
-            print ("%s already in graph" % (node))
 
     def addEdge(self, node1, node2):
         ''' Add an edge between the two nodes '''
@@ -58,10 +56,6 @@ class GraphDict(object):
         if node1 in self.graphDict:
             if node2 not in self.graphDict[node1]:
                 self.graphDict[node1].append(node2)
-            else:
-                print("node already in neighbourhood")
-        else:
-            raise ValueError('node %s not in graph' % node1)
 
 
     def listNodes(self):
@@ -81,7 +75,7 @@ class GraphDict(object):
     def getDefendersList(self):
         ''' Retrieves only the keys of the dictionary corresponding of
         a defender '''
-        defNodes = list() 
+        defNodes = list()
         for node in self.graphDict:
             if not node.isAtk():
                 defNodes.append(node)
