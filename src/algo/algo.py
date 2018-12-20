@@ -32,6 +32,8 @@ def greedyMinDominatingSet(graph, k):
         if (len(graph.getDefendersList()) == 0):
             return None
         nodeMaxDegree = graph.getDefenderMaxDegree(markedNodes)
+        if nodeMaxDegree is None:
+            return None
         dominatingSet.add(nodeMaxDegree)
         markedNodes.add(nodeMaxDegree)
         for neighbourNode in graph.getNeighbourhood(nodeMaxDegree):

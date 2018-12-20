@@ -54,7 +54,7 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
                 graph.addEdge(interceptedShoot[0], interceptedShoot[1])
 
     # Doesn't work properly. Some possibility without colision are removed
-    #addColision(graph, problem.robot_radius * 2)
+    #addColision(graph, minDistance)
     return graph
 
 
