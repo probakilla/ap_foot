@@ -17,6 +17,7 @@ class Display(object):
         self.size = numpy.array([1500, 1000])
         self.problem = problem
         self.goalThickness = 5
+        self.fieldLimitThickness = 4
         self.dominantList = dominantList
         self.collide = False
         # Colors
@@ -28,6 +29,7 @@ class Display(object):
         self.domColor = (255, 105, 180)
         self.failureColor = (255, 0, 0)
         self.stopColor = (0, 255, 0)
+        self.fieldLimitColor = (0, 70, 0)
 
     def getRatio(self):
         return 0.4 * min(self.size[0] / self.problem.field_limits[0, 1] -
@@ -126,7 +128,8 @@ class Display(object):
             for defNode in self.dominantList:
                 if defNode.isAtk():
                     continue
-                collide_point = segmentCircleIntersection(robot_pos, kick_end, defNode.pos, self.problem.robot_radius)
+                collide_point = segmentCircleIntersection(
+                    robot_pos, kick_end, defNode.pos, self.problem.robot_radius)
                 if not collide_point is None:
                     if self.collide:
                         kick_end = collide_point
@@ -151,7 +154,26 @@ class Display(object):
             self.drawSegmentInField(screen, self.goalColor, goal.posts[:, 0],
                                     goal.posts[:, 1], self.goalThickness)
 
+    def drawFieldLimits(self, screen):
+        leftTop = [self.problem.field_limits[0, 0],
+                   self.problem.field_limits[1, 1]]
+        leftBot = [self.problem.field_limits[0, 0],
+                   self.problem.field_limits[1, 0]]
+        rightTop = [self.problem.field_limits[0, 1],
+                    self.problem.field_limits[1, 1]]
+        rightBot = [self.problem.field_limits[0, 1],
+                    self.problem.field_limits[1, 0]]
+        self.drawSegmentInField(screen, self.fieldLimitColor,
+                                leftTop, leftBot, self.fieldLimitThickness)
+        self.drawSegmentInField(screen, self.fieldLimitColor,
+                                leftTop, rightTop, self.fieldLimitThickness)
+        self.drawSegmentInField(screen, self.fieldLimitColor,
+                                rightTop, rightBot, self.fieldLimitThickness)
+        self.drawSegmentInField(screen, self.fieldLimitColor,
+                                rightBot, leftBot, self.fieldLimitThickness)
+
     def drawField(self, screen):
+        self.drawFieldLimits(screen)
         self.drawNodes(screen)
         self.drawDominants(screen)
         self.drawGoals(screen)
@@ -162,6 +184,7 @@ class Display(object):
             self.drawDictEdges(screen)
         if isinstance(self.graph, GraphAdjacency):
             self.drawAdjacencyEdges(screen)
+        self.drawFieldLimits(screen)
         self.drawNodes(screen)
         self.drawDominants(screen)
         self.drawGoals(screen)
