@@ -54,18 +54,25 @@ def generateDefendersTriangle(problem):
     while point[0] > minAbscissa:
         point[1] = maxOrdinate
         while point[1] > minOrdinate:
+
+            isInside = False
             for triangle in triangleList:
                 if triangle.isInTriangle(point):
-                    addNode = True
-                    for rect in no_zones:
-                        if rect.pointInRectangle(point):
-                            addNode = False
-                            break
-                    if addNode:
-                        nodes.append(np.array([point[0], point[1]]))
+                    isInside = True
+                    break
+            if isInside:
+                isInside = False
+                for rect in no_zones:
+                    if rect.pointInRectangle(point):
+                        isInside = True
+                        break
+                if not isInside:
+                    nodes.append(np.array([point[0], point[1]]))
+
             point[1] -= problem.pos_step
         point[0] -= problem.pos_step
     return nodes
+
 
 def increaseDistance(point1, point2, distance):
     if point1[1] > point2[1]:
@@ -75,6 +82,7 @@ def increaseDistance(point1, point2, distance):
         point2[1] += distance
         point1[1] -= distance
     return (point1, point2)
+
 
 def generateRectangleZone(goal):
     topLeft = np.array([goal.no_zone[0][0], goal.no_zone[1][1]])
