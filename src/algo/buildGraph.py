@@ -27,29 +27,25 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
     graph = GraphDict() if buildWith == DICT else GraphAdjacency()
     minDistance = 2 * problem.robot_radius
 
+    shootings = list()
     for ofenderIdx in range(problem.getNbOpponents()):
         ofender = problem.getOpponent(ofenderIdx)
-        shootings = list()
         for goal in problem.goals:
             for theta in np.arange(0.0, 2 * np.pi, problem.theta_step):
                 goalIntersection = goal.kickResult(ofender, theta)
                 if goalIntersection is not None:
                     atkNode = Node(ofender, theta)
                     graph.addNode(atkNode)
-                    shootings.append(
-                        {"atk": atkNode, "intersect": goalIntersection})
+                    shootings.append({"atk": atkNode, "intersect": goalIntersection})
 
-        listInterceptedShoot = list()
-        for defender in nodes:
-            if getDistance(ofender, defender) > minDistance:
-                for shoot in shootings:
-                    shootInterception = segmentCircleIntersection(
-                        ofender, shoot["intersect"],
-                        defender, problem.robot_radius)
-                    if shootInterception is not None:
-                        listInterceptedShoot.append((shoot["atk"], Node(defender)))
-        if listInterceptedShoot:
-            for interceptedShoot in listInterceptedShoot:
-                graph.addNode(interceptedShoot[1])
-                graph.addEdge(interceptedShoot[0], interceptedShoot[1])
+    for defender in nodes:
+        added = None
+        for shoot in shootings:
+            if getDistance(shoot["atk"].pos, defender) > minDistance:
+                shootInterception = segmentCircleIntersection(shoot["atk"].pos, shoot["intersect"], defender, problem.robot_radius)
+                if shootInterception is not None:
+                    if added is None:
+                        added = Node(defender)
+                        graph.addNode(added)
+                    graph.addEdge(shoot["atk"], added)
     return graph

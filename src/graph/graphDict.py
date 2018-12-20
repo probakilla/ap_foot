@@ -53,14 +53,7 @@ class GraphDict(object):
 
     def addEdgeBetweenNodes(self, node1, node2):
         ''' Add a node in the neighbourg list of a node '''
-        if node1 in self.graphDict:
-            if node2 not in self.graphDict[node1]:
-                self.graphDict[node1].append(node2)
-            else:
-                print("node already in neighbourhood")
-        else:
-            raise ValueError('node %s not in graph' % node1)
-
+        self.graphDict[node1].append(node2)
 
     def listNodes(self):
         ''' Retrieves the list of the nodes, corresponding of all key
