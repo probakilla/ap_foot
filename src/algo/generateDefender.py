@@ -32,9 +32,10 @@ def generateDefendersTriangle(problem):
         ofender = problem.getOpponent(i)
         for goal in problem.goals:
             post1 = np.array([goal.posts[:, 0][0],
-                              goal.posts[:, 0][1] - problem.pos_step])
+                              goal.posts[:, 0][1]])
             post2 = np.array([goal.posts[:, 1][0],
-                              goal.posts[:, 1][1] + problem.pos_step])
+                              goal.posts[:, 1][1]])
+            post1, post2 = increaseDistance(post1, post2, problem.pos_step)
             triangleList.append(Triangle(ofender, post1, post2))
 
     maxOrdinate = problem.field_limits[1][1]
@@ -52,3 +53,12 @@ def generateDefendersTriangle(problem):
             point[1] -= problem.pos_step
         point[0] -= problem.pos_step
     return nodes
+
+def increaseDistance(point1, point2, distance):
+    if point1[1] > point2[1]:
+        point1[1] += distance
+        point2[1] -= distance
+    else:
+        point2[1] += distance
+        point1[1] -= distance
+    return (point1, point2)
