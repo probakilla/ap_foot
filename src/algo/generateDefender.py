@@ -39,9 +39,9 @@ def generateDefendersTriangle(problem):
 
     maxOrdinate = problem.field_limits[1][1]
     minOrdinate = problem.field_limits[1][0]
-    abscissa = problem.field_limits[0][1]
-    minAbscissa = min(problem.opponents[0])
-    point = np.array([abscissa, maxOrdinate])
+    maxAbscissa = problem.field_limits[0][1]
+    minAbscissa = problem.field_limits[0][0]
+    point = np.array([maxAbscissa, maxOrdinate])
     while point[0] > minAbscissa:
         point[1] = maxOrdinate
         while point[1] > minOrdinate:
