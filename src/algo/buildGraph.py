@@ -48,22 +48,4 @@ def buildGraph(problem, buildWith=ADJACENCY, defenderBuild=TRIANGLE_DEF):
                         added = Node(defender)
                         graph.addNode(added)
                     graph.addEdge(shoot["atk"], added)
-
-    # Doesn't work properly. Some possibility without colision are removed
-    # addColision(graph, minDistance)
     return graph
-
-
-def addColision(graph, minDistance):
-    '''
-    Add an edge between defenders separated by a distance under minDistance in
-    graph.
-    '''
-    defenderList = graph.getDefendersList()
-    nbDefenders = len(defenderList)
-    enumDefender = enumerate(defenderList)
-    for i, firstNode in enumDefender:
-        for indexSecondNode in range(i, nbDefenders):
-            secondNode = defenderList[indexSecondNode]
-            if firstNode != secondNode and getDistance(firstNode.pos, secondNode.pos) <= minDistance:
-                graph.addEdge(firstNode, secondNode)
