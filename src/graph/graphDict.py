@@ -43,7 +43,8 @@ class GraphDict(object):
 
     def addNode(self, node):
         ''' Add a node in the dictionary member '''
-        self.graphDict[node] = []
+        if node not in self.graphDict:
+            self.graphDict[node] = []
 
     def addEdge(self, node1, node2):
         ''' Add an edge between the two nodes '''
@@ -52,7 +53,11 @@ class GraphDict(object):
 
     def addEdgeBetweenNodes(self, node1, node2):
         ''' Add a node in the neighbourg list of a node '''
-        self.graphDict[node1].append(node2)
+        if node1 in self.graphDict:
+            if node2 not in self.graphDict[node1]:
+                self.graphDict[node1].append(node2)
+        else:
+            raise ValueError('node %s not in graph' % node1)
 
     def listNodes(self):
         ''' Retrieves the list of the nodes, corresponding of all key
