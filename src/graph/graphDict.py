@@ -45,8 +45,6 @@ class GraphDict(object):
         ''' Add a node in the dictionary member '''
         if node not in self.graphDict:
             self.graphDict[node] = []
-        else:
-            print ("%s already in graph" % (node))
 
     def addEdge(self, node1, node2):
         ''' Add an edge between the two nodes '''
