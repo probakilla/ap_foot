@@ -56,10 +56,13 @@ def generateDefendersTriangle(problem):
         while point[1] > minOrdinate:
             for triangle in triangleList:
                 if triangle.isInTriangle(point):
+                    addNode = True
                     for rect in no_zones:
-                        if not rect.pointInRectangle(point):
-                            nodes.append(np.array([point[0], point[1]]))
+                        if rect.pointInRectangle(point):
+                            addNode = False
                             break
+                    if addNode:
+                        nodes.append(np.array([point[0], point[1]]))
             point[1] -= problem.pos_step
         point[0] -= problem.pos_step
     return nodes
