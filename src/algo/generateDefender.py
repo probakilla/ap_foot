@@ -46,8 +46,6 @@ def generateDefendersTriangle(problem):
             triangleList.append(Triangle(ofender, post1, post2))
             no_zones.append(generateRectangleZone(goal))
 
-    for rect in triangleList:
-        print(rect)
     maxOrdinate = problem.field_limits[1][1]
     minOrdinate = problem.field_limits[1][0]
     maxAbscissa = problem.field_limits[0][1]
