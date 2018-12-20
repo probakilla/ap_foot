@@ -46,6 +46,8 @@ def generateDefendersTriangle(problem):
             triangleList.append(Triangle(ofender, post1, post2))
             no_zones.append(generateRectangleZone(goal))
 
+    for rect in triangleList:
+        print(rect)
     maxOrdinate = problem.field_limits[1][1]
     minOrdinate = problem.field_limits[1][0]
     maxAbscissa = problem.field_limits[0][1]
@@ -54,24 +56,17 @@ def generateDefendersTriangle(problem):
     while point[0] > minAbscissa:
         point[1] = maxOrdinate
         while point[1] > minOrdinate:
-
-            isInside = False
             for triangle in triangleList:
                 if triangle.isInTriangle(point):
-                    isInside = True
-                    break
-            if isInside:
-                isInside = False
-                for rect in no_zones:
-                    if rect.pointInRectangle(point):
-                        isInside = True
+                    if not belongsToOneRect(no_zones, point):
+                        nodes.append(np.array([point[0], point[1]]))
                         break
-                if not isInside:
-                    nodes.append(np.array([point[0], point[1]]))
-
             point[1] -= problem.pos_step
         point[0] -= problem.pos_step
     return nodes
+
+
+
 
 
 def increaseDistance(point1, point2, distance):
@@ -85,8 +80,14 @@ def increaseDistance(point1, point2, distance):
 
 
 def generateRectangleZone(goal):
-    topLeft = np.array([goal.no_zone[0][0], goal.no_zone[1][1]])
-    topRight = np.array([goal.no_zone[0][1], goal.no_zone[1][1]])
-    botLeft = np.array([goal.no_zone[0][0], goal.no_zone[1][0]])
-    botRight = np.array([goal.no_zone[0][1], goal.no_zone[1][0]])
+    topLeft = np.array([min(goal.no_zone[0]), max(goal.no_zone[1])])
+    topRight = np.array([max(goal.no_zone[0]), max(goal.no_zone[1])])
+    botLeft = np.array([min(goal.no_zone[0]), min(goal.no_zone[1])])
+    botRight = np.array([max(goal.no_zone[0]), min(goal.no_zone[1])])
     return Rectangle(topLeft, topRight, botLeft, botRight)
+
+def belongsToOneRect(rectList, point):
+    for rect in rectList:
+        if rect.pointInRectangle(point):
+            return True
+    return False
