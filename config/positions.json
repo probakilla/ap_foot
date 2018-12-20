@@ -4,7 +4,7 @@
         {
             "posts" : [[4.5, -0.5], [4.5, 0.5]],
             "direction" : [1,0],
-            "no_zone" : [[3.5, 4.5], [-1, 1]]
+            "no_zone" : [[3.5, 4.51], [-1, 1]]
         }
     ],
     "opponents" : [
@@ -14,5 +14,5 @@
     ],
     "robot_radius" : 0.09,
     "theta_step" : 0.031416,
-    "pos_step" : 0.02
+    "pos_step" : 0.2
 }

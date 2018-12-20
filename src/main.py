@@ -39,6 +39,8 @@ def usage():
           " be an integer. By default, k=3")
     print("-h, --help")
     print("  Display the help for this program.")
+    print("-p, --profile")
+    print("  Enable the profiling of the buildGraph")
 
 
 def displayArgParse(displayArgument):

@@ -12,13 +12,18 @@ def generateDefenders(problem):
         Brute force algorithm to generate defenders (on all field).
     """
     nodes = []
+    no_zones = list()
+    for goal in problem.goals:
+        no_zones.append(generateRectangleZone(goal))
     for i in np.arange((problem.getFieldCenter()[0] -
                         problem.getFieldWidth() / 2),
                        problem.getFieldWidth(), problem.pos_step):
         for j in np.arange((problem.getFieldCenter()[1] -
                             problem.getFieldHeight() / 2),
                            problem.getFieldHeight(), problem.pos_step):
-            nodes.append([i, j])
+            for rect in no_zones:
+                if not rect.pointInRectangle([i, j]):
+                    nodes.append([i, j])
     return nodes
 
 
@@ -39,11 +44,7 @@ def generateDefendersTriangle(problem):
                               goal.posts[:, 1][1]])
             post1, post2 = increaseDistance(post1, post2, problem.pos_step)
             triangleList.append(Triangle(ofender, post1, post2))
-            topLeft = np.array([goal.no_zone[0][0], goal.no_zone[1][1]])
-            topRight = np.array([goal.no_zone[0][1], goal.no_zone[1][1]])
-            botLeft = np.array([goal.no_zone[0][0], goal.no_zone[1][0]])
-            botRight = np.array([goal.no_zone[0][1], goal.no_zone[1][0]])
-            no_zones.append(Rectangle(topLeft, topRight, botLeft, botRight))
+            no_zones.append(generateRectangleZone(goal))
 
     maxOrdinate = problem.field_limits[1][1]
     minOrdinate = problem.field_limits[1][0]
@@ -71,3 +72,10 @@ def increaseDistance(point1, point2, distance):
         point2[1] += distance
         point1[1] -= distance
     return (point1, point2)
+
+def generateRectangleZone(goal):
+    topLeft = np.array([goal.no_zone[0][0], goal.no_zone[1][1]])
+    topRight = np.array([goal.no_zone[0][1], goal.no_zone[1][1]])
+    botLeft = np.array([goal.no_zone[0][0], goal.no_zone[1][0]])
+    botRight = np.array([goal.no_zone[0][1], goal.no_zone[1][0]])
+    return Rectangle(topLeft, topRight, botLeft, botRight)
