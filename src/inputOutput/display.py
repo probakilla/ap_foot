@@ -29,7 +29,7 @@ class Display(object):
         self.domColor = (255, 105, 180)
         self.failureColor = (255, 0, 0)
         self.stopColor = (0, 255, 0)
-        self.fieldLimitColor = (0, 70, 0)
+        self.fieldLimitColor = (255, 20, 147)
 
     def getRatio(self):
         return 0.4 * min(self.size[0] / self.problem.field_limits[0, 1] -
