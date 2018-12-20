@@ -6,6 +6,7 @@ from graph.graphAdjacency import GraphAdjacency
 from inputOutput.jsonParser import parseFile
 from inputOutput.problem import Problem
 from algo.geometry import segmentCircleIntersection
+from algo.rectangle import Rectangle
 
 DISPLAY_FIELD = 1
 DISPLAY_GRAPH = 2
@@ -17,7 +18,7 @@ class Display(object):
         self.size = numpy.array([1500, 1000])
         self.problem = problem
         self.goalThickness = 5
-        self.fieldLimitThickness = 4
+        self.fieldLimitThickness = 3
         self.dominantList = dominantList
         self.collide = False
         # Colors
@@ -155,25 +156,43 @@ class Display(object):
                                     goal.posts[:, 1], self.goalThickness)
 
     def drawFieldLimits(self, screen):
-        leftTop = [self.problem.field_limits[0, 0],
+        topLeft = [self.problem.field_limits[0, 0],
                    self.problem.field_limits[1, 1]]
-        leftBot = [self.problem.field_limits[0, 0],
+        botLeft = [self.problem.field_limits[0, 0],
                    self.problem.field_limits[1, 0]]
-        rightTop = [self.problem.field_limits[0, 1],
+        topRight = [self.problem.field_limits[0, 1],
                     self.problem.field_limits[1, 1]]
-        rightBot = [self.problem.field_limits[0, 1],
+        botRigth = [self.problem.field_limits[0, 1],
                     self.problem.field_limits[1, 0]]
+        self.drawRectangleInField(screen, Rectangle(topLeft, topRight,
+         botLeft, botRigth))
+
+    def drawNoZones(self, screen):
+        for goal in self.problem.goals:
+            topLeft = [goal.no_zone[0][0], goal.no_zone[1][0]]
+            botLeft = [goal.no_zone[0][0], goal.no_zone[1][1]]
+            topRight = [goal.no_zone[0][1], goal.no_zone[1][0]]
+            botRight =  [goal.no_zone[0][1], goal.no_zone[1][1]]
+            self.drawRectangleInField(screen, Rectangle(topLeft, topRight,
+            botLeft, botRight))
+
+    def drawRectangleInField(self, screen, rect):
         self.drawSegmentInField(screen, self.fieldLimitColor,
-                                leftTop, leftBot, self.fieldLimitThickness)
+                                rect.topLeft, rect.botLeft,
+                                self.fieldLimitThickness)
         self.drawSegmentInField(screen, self.fieldLimitColor,
-                                leftTop, rightTop, self.fieldLimitThickness)
+                                rect.topLeft, rect.topRight,
+                                self.fieldLimitThickness)
         self.drawSegmentInField(screen, self.fieldLimitColor,
-                                rightTop, rightBot, self.fieldLimitThickness)
+                                rect.topRight, rect.botRight,
+                                self.fieldLimitThickness)
         self.drawSegmentInField(screen, self.fieldLimitColor,
-                                rightBot, leftBot, self.fieldLimitThickness)
+                                rect.botRight, rect.botLeft,
+                                self.fieldLimitThickness)
 
     def drawField(self, screen):
         self.drawFieldLimits(screen)
+        self.drawNoZones(screen)
         self.drawNodes(screen)
         self.drawDominants(screen)
         self.drawGoals(screen)
@@ -185,6 +204,7 @@ class Display(object):
         if isinstance(self.graph, GraphAdjacency):
             self.drawAdjacencyEdges(screen)
         self.drawFieldLimits(screen)
+        self.drawNoZones(screen)
         self.drawNodes(screen)
         self.drawDominants(screen)
         self.drawGoals(screen)
