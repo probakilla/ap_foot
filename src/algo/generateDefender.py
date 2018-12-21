@@ -64,9 +64,6 @@ def generateDefendersTriangle(problem):
     return nodes
 
 
-
-
-
 def increaseDistance(point1, point2, distance):
     if point1[1] > point2[1]:
         point1[1] += distance
@@ -83,6 +80,7 @@ def generateRectangleZone(goal):
     botLeft = np.array([min(goal.no_zone[0]), min(goal.no_zone[1])])
     botRight = np.array([max(goal.no_zone[0]), min(goal.no_zone[1])])
     return Rectangle(topLeft, topRight, botLeft, botRight)
+
 
 def belongsToOneRect(rectList, point):
     for rect in rectList:
