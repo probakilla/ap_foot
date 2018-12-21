@@ -12,21 +12,19 @@ def parseFile(file):
 
 
 def graphToJson(graph, fileName):
-    if not isinstance(graph, dict):
-        raise Exception("Not a graph !")
     if not fileName[-5:] == JSON_EXT:
         raise Exception(fileName + " is not a json file !")
     with open(fileName, 'w') as jsonFile:
-        data = {"Posisions": []}
+        data = {"DominatingSet": []}
         encoder = NodeEncoder()
         for node in graph:
-            data["Posisions"].append(encoder.encode(node))
+            data["DominatingSet"].append(encoder.encode(node))
         json.dump(data, jsonFile)
 
 
 class NodeEncoder(json.JSONEncoder):
     def default(self, node):
         if isinstance(node, Node):
-            return [node.pos.x, node.pos.y]
+            return [node.pos[0], node.pos[1]]
         else:
             super().default(self, node)

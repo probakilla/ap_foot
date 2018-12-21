@@ -10,6 +10,7 @@ from algo.algo import greedyMinDominatingSet, bruteForceMinDominatingSet
 from algo.buildGraph import buildGraph, ADJACENCY, DICT
 from inputOutput.display import Display, DISPLAY_FIELD, DISPLAY_GRAPH
 from inputOutput.problem import Problem
+from inputOutput.jsonParser import graphToJson
 
 DISPLAY_MODES = ["FIELD", "GRAPH", None]
 GRAPH_TYPES = ["ADJ", "DICT"]
@@ -39,6 +40,10 @@ def usage():
           " be an integer. By default, k=3")
     print("-h, --help")
     print("  Display the help for this program.")
+    print("-o, --outfile=FILE_PATH")
+    print("  Specify the path to the wanted output file. The file MUST have"
+          " a .json extension. The file will contains the positions of the"
+          " defenders in the result of the dominating set function.")
     print("-p, --profile")
     print("  Enable the profiling of the buildGraph")
 
@@ -85,11 +90,12 @@ if __name__ == "__main__":
     DISPLAY_ARG = None
     GRAPH_ARG = None
     ALGO_ARG = "GREEDY"
+    OUT_FILE_ARG = None
     PROFILING_ARG = False
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "a:d:f:g:hpk:",
+        opts, args = getopt.getopt(sys.argv[1:], "a:d:f:g:ho:pk:",
                                    ["algo=", "display=", "file=", "graph=",
-                                    "help", "profile"])
+                                    "help", "outfile" ,"profile"])
     except getopt.GetoptError as err:
         print(err)
         usage()
@@ -105,7 +111,7 @@ if __name__ == "__main__":
             DISPLAY_ARG = displayArgParse(arg.upper())
         elif opt in ("-f", "--file"):
             if not os.path.isfile(arg):
-                print("ERROR: %s does not exists !" % arg)
+                print("ERROR: {} does not exists !".format(arg))
                 sys.exit(4)
             FILE_ARG = arg
         elif opt in ("-g", "--graph"):
@@ -113,6 +119,11 @@ if __name__ == "__main__":
         elif opt in ("-h", "--help"):
             usage()
             sys.exit()
+        elif opt in ("-o", "--outfile"):
+            if os.path.isfile(arg):
+                print("ERROR: Outfile {} already exists !".format(arg))
+                sys.exit(9)
+            OUT_FILE_ARG = arg
         elif opt in ("-p", "--profile"):
             PROFILING_ARG = True
         elif opt in ("-k"):
@@ -172,3 +183,6 @@ if __name__ == "__main__":
         else:
             display = Display(graph, problem, domSet)
         display.run(DISPLAY_ARG, True)
+
+    if not OUT_FILE_ARG is None:
+        graphToJson(domSet, OUT_FILE_ARG)
